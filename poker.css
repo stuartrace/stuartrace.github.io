@@ -1,0 +1,69 @@
+@font-face {
+  font-family: pokerFont;
+  src: url('./images/monterey/MontereyFLF.ttf');
+}
+
+body {
+  background-color: #006e1d;
+  background: url('./images/green-bg.jpg');
+  color: white;
+  font-family: pokerFont, Arial, Helvetica, sans-serif
+}
+
+.main {
+  display: grid;
+  grid-template-columns: 20% 70% 10%;
+}
+
+.chips-holder {
+  /* display: grid; */
+  /* grid-template-columns: 20% 20% 20% 20% 20%; */
+}
+
+.chip-holder {
+  padding: 5px;
+  position: relative;
+}
+
+.chip-holder input {
+  position: absolute;
+  left: 6vh;
+  top: 6vh;
+  width: 4vh;
+  font-size: 2vh;
+}
+
+.chip-holder::before {
+  content: "£";
+  color: white;
+  position: absolute;
+  left: 4.5vh;
+  font-size: 2.5vh;
+  top: 6vh;
+}
+
+.info-bar {
+  /* display: grid; */
+  grid-template-columns: 33% 33% 33%;
+  grid-template-rows: auto;
+}
+
+.info-bar-element {
+  /* display: inline-block; */
+  background-color: white;
+  border-radius: 10px;
+  color: black;
+  margin: 10px;
+  padding: 10px;
+  font-size: 3vh;
+  text-align: center;
+  
+}
+
+.poker-chip {
+  height: 15vh;
+}
+
+.hands-guide {
+  height: 75vh;
+}
