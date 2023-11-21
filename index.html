@@ -16,39 +16,47 @@
         <div class="info-title">CURRENT TIME</div>
         <div id="clock-output"></div>
       </div>
-      <div class="info-bar-element" id="blind-increase-wrapper">
+      <div class="info-bar-element hidden-on-load" id="blind-increase-wrapper">
         <div class="info-title">Blinds Increase</div>
         <span id="next-blind-increase-time"></span>
       </div>
-      <div class="info-bar-element" id="blind-increase-wrapper">
+      <div class="info-bar-element hidden-on-load" id="current-blind-wrapper">
         <div class="info-title">Current Blinds</div>
         <span id="blind-values"></span>
       </div>
-      Blind increase interval (mins)<input type="text" id="blind-increase-interval" class="chip-input" value="30" />
+      <div class="info-bar-element" id="blind-increase-interval-wrapper">
+        <div class="info-title">Blind Increase (Mins)</div>
+        <span id="blind-interval"><input type="text" id="blind-increase-interval" class="interval-input" value="30" /></span>
+      </div>
+      <div class="info-bar-element" id="blind-increase-wrapper">
+        <div class="info-title">Last Buy In</div>
+        <span id="blind-values"><input type="text" id="last-buy-in" class="interval-input" value="10:30" /></span>
+      </div>
+      
       <button id="start-game-btn">Start the game</button>
     </div>
     <div class="hands-holder">
       <img class="hands-guide" src="./images/poker-hands.jpg" />
     </div>
     <div class="chips-holder">
-      <div class="chip-holder">
-        <img src="./images/poker-chip-white.jpg" class="poker-chip poker-chip-white"/>
+      <div class="chip-holder chip-holder-white">
+        <img src="./images/poker-chip-white.png" class="poker-chip poker-chip-white"/>
         <input type="text" id="white-chip-value" class="chip-input" value="0.10" />
       </div>
       <div class="chip-holder">
-        <img src="./images/poker-chip-green.jpg" class="poker-chip poker-chip-green"/>
+        <img src="./images/poker-chip-green.png" class="poker-chip poker-chip-green"/>
         <input type="text" id="green-chip-value" class="chip-input" value="0.20" />
       </div>
       <div class="chip-holder">
-        <img src="./images/poker-chip-blue.jpg" class="poker-chip poker-chip-blue"/>
+        <img src="./images/poker-chip-blue.png" class="poker-chip poker-chip-blue"/>
         <input type="text" id="blue-chip-value" class="chip-input" value="0.50" />
       </div>
       <div class="chip-holder">
-        <img src="./images/poker-chip-red.jpg" class="poker-chip poker-chip-red"/>
+        <img src="./images/poker-chip-red.png" class="poker-chip poker-chip-red"/>
         <input type="text" id="red-chip-value" class="chip-input" value="1" />
       </div>
       <div class="chip-holder">
-        <img src="./images/poker-chip-black.jpg" class="poker-chip poker-chip-black"/>
+        <img src="./images/poker-chip-black.png" class="poker-chip poker-chip-black"/>
         <input type="text" id="black-chip-value" class="chip-input" value="5" />
       </div>
     </div>
@@ -73,12 +81,13 @@
         $('.chip-input').attr("disabled", "disabled")
         console.log("Started");
         setNewBlindIncrease();
+        $('.hidden-on-load').show();
+        $('#start-game-btn').hide();
       });
 
       setInterval(function() {
         var date = new Date();
-        $('#clock-output').html(date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
-        console.log("D", date.getTime(), blindIncreaseTime)
+        $('#clock-output').html(date.toLocaleTimeString());
         if (blindIncreaseTime && date.getTime() > blindIncreaseTime) {
           setNewBlindIncrease()
         }
