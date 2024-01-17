@@ -32,6 +32,17 @@
         <div class="info-title">Last Buy In</div>
         <span id="blind-values"><input type="text" id="last-buy-in" class="interval-input" value="10:30" /></span>
       </div>
+      <div class="info-bar-element" id="blind-combos-wrapper">
+        <div class="info-title">Blinds</div>
+        <div><input type="text" id="blind-1" class="blind-input" value="10p / 20p" /></div>
+        <div><input type="text" id="blind-2" class="blind-input" value="20p / 40p" /></div>
+        <div><input type="text" id="blind-3" class="blind-input" value="50p / £1" /></div>
+        <div><input type="text" id="blind-4" class="blind-input" value="£1 / £2" /></div>
+        <div><input type="text" id="blind-5" class="blind-input" value="£2 / £4" /></div>
+        <div><input type="text" id="blind-6" class="blind-input" value="£3 / £6" /></div>
+        <div><input type="text" id="blind-7" class="blind-input" value="£4 / £8" /></div>
+        <div><input type="text" id="blind-8" class="blind-input" value="£5 / £10" /></div>
+      </div>
       
       <button id="start-game-btn">Start the game</button>
     </div>
@@ -62,7 +73,6 @@
     </div>
   </div>
 
-  // TODO - start at blindIndex
   <script type="text/javascript">
     $(document).ready(function() {
       let blindIndex = 0;
@@ -79,10 +89,21 @@
 
       $("#start-game-btn").click(function(){
         $('.chip-input').attr("disabled", "disabled")
-        console.log("Started");
+        $('#blind-increase-interval').attr("disabled", "disabled")
+        $('#last-buy-in').attr("disabled", "disabled")
+        blindMap[0] = $('#blind-1').val()
+        blindMap[1] = $('#blind-2').val()
+        blindMap[2] = $('#blind-3').val()
+        blindMap[3] = $('#blind-4').val()
+        blindMap[4] = $('#blind-5').val()
+        blindMap[5] = $('#blind-6').val()
+        blindMap[6] = $('#blind-7').val()
+        blindMap[7] = $('#blind-8').val()
+        console.log("Started", blindMap);
         setNewBlindIncrease();
         $('.hidden-on-load').show();
         $('#start-game-btn').hide();
+        $('#blind-combos-wrapper').hide();
       });
 
       setInterval(function() {

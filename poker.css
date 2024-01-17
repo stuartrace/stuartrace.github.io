@@ -81,6 +81,12 @@ h1 {
   width: 5vh;
 }
 
+.blind-input {
+  font-size: 2vh;
+  width: 12vh;
+  text-align: center;
+}
+
 .poker-chip {
   height: 15vh;
 }
