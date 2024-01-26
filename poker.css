@@ -60,12 +60,17 @@ h1 {
   font-weight: bold;
 }
 
+.hands-holder {
+  text-align: center;
+  margin-top: 20px;
+}
+
 .info-bar-element {
   /* display: inline-block; */
   background-color: white;
   border-radius: 10px;
   color: black;
-  margin: 20px;
+  margin: 15px;
   padding: 10px;
   font-size: 3vh;
   text-align: center;
