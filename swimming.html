@@ -19,7 +19,17 @@
     </div>
     <input type="button" value="Save details" onClick="saveData()"/>
     <div id="output"></div>
-    <table id="times-table"></table>
+    <table>
+      <thead>
+        <tr>
+          <td>Distance</td>
+          <td>Type</td>
+          <td>Time</td>
+          <td>Delta</td>
+        </tr>  
+      </thead>
+      <tbody id="times-table"></tbody>
+    </table>
     <hr />
     <div class="row">
       <label for="type">Type</label>
