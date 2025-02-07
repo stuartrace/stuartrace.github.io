@@ -2,6 +2,157 @@
   <head>
   </head>
   <body>
-    <h2>Test</h2>
+    <h1>County times</h1>
+    <h2>Swimmer details</h2>
+    <div class="row">
+      <label for="age">Age</label>
+      <select id="age">
+        <option id="10">10</option>
+        <option id="11">11</option>
+        <option id="12">12</option>
+        <option id="13">13</option>
+        <option id="14">14</option>
+        <option id="15">15</option>
+        <option id="16">16</option>
+      </select>
+      <label for="name">Name</label><input id="name" type="text" />
+    </div>
+    <input type="button" value="Save details" onClick="saveData()"/>
+    <div id="output"></div>
+    <hr />
+    <div class="row">
+      <label for="type">Type</label>
+      <select id="type">
+        <option id="Back">Back</option>
+        <option id="Breast">Breast</option>
+        <option id="Butterfly">Butterfly</option>
+        <option id="Free">Free</option>
+      </select>
+      <label for="distance">Distance</label>
+      <select id="distance">
+        <option id="50">50m</option>
+        <option id="100">100m</option>
+        <option id="200">200m</option>
+        <option id="400">400m</option>
+      </select>
+      <label for="time-entry">Time</label>
+      <input type="text" id="time-entry">
+      <input type="button" value="Save time" onClick="saveTime()"
+    </div>
+    
+    <script type="text/javascript">
+      const times = {
+        "50m": {
+          Back: {
+            10: "46.9",
+            11: "46.9",
+            12: "43.4",
+            13: "37.8",
+            14: "36.6",
+            15: "33.6",
+            16: "32.6"
+          },
+          Breast: {
+            10: "56.8",
+            11: "56.8",
+            12: "50.2",
+            13: "45.8",
+            14: "44.0",
+            15: "41.4",
+            16: "36.5"
+          },
+          Butterfly: {
+            10: "52.9",
+            11: "52.9",
+            12: "46.3",
+            13: "39.8",
+            14: "36.6",
+            15: "33.7",
+            16: "31.0"
+          },
+          Free: {
+            10: "39.1",
+            11: "39.1",
+            12: "36.8",
+            13: "32.3",
+            14: "31.9",
+            15: "29.1",
+            16: "27.0"
+          }
+        },
+        "100m": {
+          
+        },
+        "200m": {
+          
+        },
+        "400m": {
+          
+        }
+      }
+      
+      function saveData() {
+        const age = document.getElementById("age").value;
+        const name = document.getElementById("name").value;
+        //document.getElementById("output").innerHTML = `Age is ${age}`
+        localStorage.setItem("age", age);
+        localStorage.setItem("name", name);
+      }
+      
+      function loadData() {
+        const age = localStorage.getItem("age")
+        const name = localStorage.getItem("name")
+        document.getElementById("output").innerHTML = `${name} is aged ${age}`
+        document.getElementById("age").value = age;
+        document.getElementById("name").value = name;
+        
+        const distances = ["50m", "100m", "200m", "400m"]
+        const types = ["Back", "Breast", "Butterfly", "Free"]
+        
+        document.getElementById("output").innerHTML += `<h2>Stored times:</h2>`
+        
+        for (const distance of distances) {
+          for (const type of types) {
+            document.getElementById("output").innerHTML += `<div class="cell">Distance</div>`
+            const thisTime = localStorage.getItem(`event-${type}-${distance}`)
+            if (thisTime !== null) {
+              document.getElementById("output").innerHTML += `<div class="cell">${distance}</div><div class="cell">${type}<div><div class="cell">${thisTime}</div>`
+              try {
+                const countyTime = times[distance][type][age]
+                document.getElementById("output").innerHTML += `<div class="cell">${countyTime}</div>`
+                const delta = Number.parseFloat(countyTime) - Number.parseFloat(thisTime)
+                document.getElementById("output").innerHTML += `<div class="cell">${delta.toFixed(2)}</div>`
+              } catch (err) {
+                console.log("err", err)
+              }
+              
+            }
+            document.getElementById("output").innerHTML += `</div>`
+          }
+          
+        }
+      }
+      
+      function saveTime() {
+        const type = document.getElementById("type").value
+        const distance = document.getElementById("distance").value
+        const timeEntry = document.getElementById("time-entry").value
+        
+        localStorage.setItem(`event-${type}-${distance}`, timeEntry);
+        
+        loadData();
+      }
+      
+      loadData()
+      
+      
+      
+    </script>
+    <style type="text/css">
+      .cell {
+        display: inline;
+        width: 200px;
+      }
+    </style>
   </body>
 </html>
