@@ -136,6 +136,7 @@
                 document.getElementById("times-table").innerHTML += `<td>${delta.toFixed(2)}</td>`
               } catch (err) {
                 console.log("err", err)
+                document.getElementById("times-table").innerHTML += `<td></td><td></td>`
               }
               
             }
