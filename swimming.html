@@ -129,20 +129,20 @@
             const thisTime = localStorage.getItem(`event-${type}-${distance}`)
             if (thisTime !== null) {
               document.getElementById("times-table").innerHTML += `<td>${distance}</td><td>${type}</td><td>${thisTime}</td>`
-              // try {
+              try {
                 const countyTime = times[distance][type][age]
                 document.getElementById("times-table").innerHTML += `<td>${countyTime}</td>`
                 const delta = Number.parseFloat(countyTime) - Number.parseFloat(thisTime)
                 document.getElementById("times-table").innerHTML += `<td>${delta.toFixed(2)}</td>`
-              // } catch (err) {
-                // console.log("err", err)
-                // document.getElementById("times-table").innerHTML += `<td></td><td></td>`
-              // }
+              } catch (err) {
+                console.log("err", err)
+                document.getElementById("times-table").innerHTML += `<td></td><td></td>`
+              }
               
             }
-            document.getElementById("times-table").innerHTML += `</tr>`
+           
           }
-          
+          document.getElementById("times-table").innerHTML += `</tr>`
         }
       }
       
