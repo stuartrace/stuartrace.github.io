@@ -19,6 +19,7 @@
     </div>
     <input type="button" value="Save details" onClick="saveData()"/>
     <div id="output"></div>
+    <table id="times-table"></table>
     <hr />
     <div class="row">
       <label for="type">Type</label>
@@ -37,7 +38,7 @@
       </select>
       <label for="time-entry">Time</label>
       <input type="text" id="time-entry">
-      <input type="button" value="Save time" onClick="saveTime()"
+      <input type="button" value="Save time" onClick="saveTime()">
     </div>
     
     <script type="text/javascript">
@@ -109,29 +110,28 @@
         const distances = ["50m", "100m", "200m", "400m"]
         const types = ["Back", "Breast", "Butterfly", "Free"]
         
-        document.getElementById("output").innerHTML += `<h2>Stored times:</h2><table>`
+        document.getElementById("output").innerHTML += `<h2>Stored times:</h2>`
         
         for (const distance of distances) {
           for (const type of types) {
-            document.getElementById("output").innerHTML += `<tr>`
+            document.getElementById("times-table").innerHTML += `<tr>`
             const thisTime = localStorage.getItem(`event-${type}-${distance}`)
             if (thisTime !== null) {
-              document.getElementById("output").innerHTML += `<td>${distance}</td><td>${type}</td><td>${thisTime}</td>`
+              document.getElementById("times-table").innerHTML += `<td>${distance}</td><td>${type}</td><td>${thisTime}</td>`
               try {
                 const countyTime = times[distance][type][age]
-                document.getElementById("output").innerHTML += `<td>${countyTime}</td>`
+                document.getElementById("times-table").innerHTML += `<td>${countyTime}</td>`
                 const delta = Number.parseFloat(countyTime) - Number.parseFloat(thisTime)
-                document.getElementById("output").innerHTML += `<td>${delta.toFixed(2)}</td>`
+                document.getElementById("times-table").innerHTML += `<td>${delta.toFixed(2)}</td>`
               } catch (err) {
                 console.log("err", err)
               }
               
             }
-            document.getElementById("output").innerHTML += `</tr>`
+            document.getElementById("times-table").innerHTML += `</tr>`
           }
           
         }
-        document.getElementById("output").innerHTML += `</table>`
       }
       
       function saveTime() {
