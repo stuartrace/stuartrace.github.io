@@ -1,5 +1,11 @@
 <html>
   <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swimming times calculator</title>
+    <link rel="stylesheet" href="./swimming.css">
+    <script src="jquery-3.7.1.min.js"></script>
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0" />
   </head>
   <body>
     <h1>County times calculator</h1>
@@ -14,6 +20,11 @@
         <option id="14">14</option>
         <option id="15">15</option>
         <option id="16">16</option>
+      </select>
+      <label for="category">Category</label>
+      <select id="category">
+        <option id="Male">Male</option>
+        <option id="Female">Female</option>
       </select>
       <label for="name">Name</label><input id="name" type="text" />
     </div>
@@ -129,15 +140,15 @@
             rowHtml ="<tr>";
             const thisTime = localStorage.getItem(`event-${type}-${distance}`)
             if (thisTime !== null) {
-              rowHtml += `<td>${distance}</td><td>${type}</td><td>${thisTime}</td>`
+              rowHtml += `<td>${distance}</td><td>${type}</td><td class="time-cell">${thisTime}</td>`
               try {
                 const countyTime = times[distance][type][age]
-                rowHtml += `<td>${countyTime}</td>`
+                rowHtml += `<td class="time-cell">${countyTime}</td>`
                 const delta = Number.parseFloat(countyTime) - Number.parseFloat(thisTime)
-                rowHtml += `<td>${delta.toFixed(2)}</td>`
+                rowHtml += `<td class="time-cell">${delta.toFixed(2)}</td>`
               } catch (err) {
                 console.log("err", err)
-                rowHtml += `<td></td><td></td>`
+                rowHtml += `<td  class="time-cell"></td><td class="time-cell"></td>`
               }
               
             }
