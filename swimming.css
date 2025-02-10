@@ -3,6 +3,11 @@ body {
   color: #fff;
 }
 
+table {
+  border: 1px solid white;
+  border-radius: 5px;
+}
+
 td {
   color: white;
 }
@@ -10,6 +15,7 @@ td {
 th {
   background-color: #1b1b9b;
   color: white;
+  padding: 5px;
 }
 
 .time-cell {
