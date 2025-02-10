@@ -29,8 +29,8 @@
       <label for="name">Name</label><input id="name" type="text" />
     </div>
     <input type="button" value="Save details" onClick="saveData()"/>
-    <h3>Personal bests</h3>
     <div id="output"></div>
+    <h3>Personal bests</h3>
     <table>
       <thead>
         <tr>
@@ -119,7 +119,6 @@
         const age = document.getElementById("age").value;
         const name = document.getElementById("name").value;
         const category = document.getElementById("category").value;
-        //document.getElementById("output").innerHTML = `Age is ${age}`
         localStorage.setItem("age", age);
         localStorage.setItem("name", name);
         localStorage.setItem("category", category);
@@ -137,7 +136,7 @@
         const distances = ["50m", "100m", "200m", "400m"]
         const types = ["Back", "Breast", "Butterfly", "Free"]
         
-        document.getElementById("output").innerHTML += `<h2>Stored times:</h2>`
+        //document.getElementById("output").innerHTML += `<h2>Stored times:</h2>`
         let rowHtml = "";
         
         for (const distance of distances) {
