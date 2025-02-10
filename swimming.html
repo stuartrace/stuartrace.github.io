@@ -117,17 +117,21 @@
       function saveData() {
         const age = document.getElementById("age").value;
         const name = document.getElementById("name").value;
+        const category = document.getElementById("category").value;
         //document.getElementById("output").innerHTML = `Age is ${age}`
         localStorage.setItem("age", age);
         localStorage.setItem("name", name);
+        localStorage.setItem("category", category);
       }
       
       function loadData() {
         const age = localStorage.getItem("age")
         const name = localStorage.getItem("name")
+        const category = localStorage.getItem("category");
         document.getElementById("output").innerHTML = `${name} is aged ${age}`
         document.getElementById("age").value = age;
         document.getElementById("name").value = name;
+        document.getElementById("category").value = category;
         
         const distances = ["50m", "100m", "200m", "400m"]
         const types = ["Back", "Breast", "Butterfly", "Free"]
