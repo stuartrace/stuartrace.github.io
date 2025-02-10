@@ -122,12 +122,11 @@
         const types = ["Back", "Breast", "Butterfly", "Free"]
         
         document.getElementById("output").innerHTML += `<h2>Stored times:</h2>`
-
+        let rowHtml = "";
         
         for (const distance of distances) {
           for (const type of types) {
-let rowHtml ="<tr>";
-            
+            rowHtml ="<tr>";
             const thisTime = localStorage.getItem(`event-${type}-${distance}`)
             if (thisTime !== null) {
               rowHtml += `<td>${distance}</td><td>${type}</td><td>${thisTime}</td>`
@@ -142,9 +141,8 @@ let rowHtml ="<tr>";
               }
               
             }
-           
+            document.getElementById("times-table").innerHTML += rowHtml; 
           }
-          document.getElementById("times-table").innerHTML += rowHtml;
         }
       }
       
