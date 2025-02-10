@@ -1,3 +1,17 @@
+body {
+  background-color: #333;
+  color: #fff;
+}
+
+td {
+  color: white;
+}
+
+th {
+  background-color: #1b1b9b;
+  color: white;
+}
+
 .time-cell {
   text-align: right;
   min-width: 4rem;
