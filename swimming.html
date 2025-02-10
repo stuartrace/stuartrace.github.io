@@ -122,27 +122,29 @@
         const types = ["Back", "Breast", "Butterfly", "Free"]
         
         document.getElementById("output").innerHTML += `<h2>Stored times:</h2>`
+
         
         for (const distance of distances) {
           for (const type of types) {
-            document.getElementById("times-table").innerHTML += `<tr>`
+let rowHtml ="<tr>";
+            
             const thisTime = localStorage.getItem(`event-${type}-${distance}`)
             if (thisTime !== null) {
-              document.getElementById("times-table").innerHTML += `<td>${distance}</td><td>${type}</td><td>${thisTime}</td>`
+              rowHtml += `<td>${distance}</td><td>${type}</td><td>${thisTime}</td>`
               try {
                 const countyTime = times[distance][type][age]
-                document.getElementById("times-table").innerHTML += `<td>${countyTime}</td>`
+                rowHtml += `<td>${countyTime}</td>`
                 const delta = Number.parseFloat(countyTime) - Number.parseFloat(thisTime)
-                document.getElementById("times-table").innerHTML += `<td>${delta.toFixed(2)}</td>`
+                rowHtml += `<td>${delta.toFixed(2)}</td>`
               } catch (err) {
                 console.log("err", err)
-                document.getElementById("times-table").innerHTML += `<td></td><td></td>`
+                rowHtml += `<td></td><td></td>`
               }
               
             }
            
           }
-          document.getElementById("times-table").innerHTML += `</tr>`
+          document.getElementById("times-table").innerHTML += rowHtml;
         }
       }
       
