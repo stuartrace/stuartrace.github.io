@@ -149,7 +149,7 @@
                 const countyTime = times[distance][type][age]
                 rowHtml += `<td class="time-cell">${countyTime}</td>`
                 const delta = Number.parseFloat(countyTime) - Number.parseFloat(thisTime)
-                rowHtml += `<td class="time-cell ${delta > 0 ? "negative-delta" : "positive-delta"}">${delta.toFixed(2)}</td>`
+                rowHtml += `<td class="time-cell ${delta > 0 ? 'negative-delta' : 'positive-delta'}">${delta.toFixed(2)}</td>`
               } catch (err) {
                 console.log("err", err)
                 rowHtml += `<td class="time-cell"></td><td class="time-cell"></td>`
