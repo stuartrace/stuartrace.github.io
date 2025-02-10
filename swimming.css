@@ -2,3 +2,13 @@
   text-align: right;
   min-width: 4rem;
 }
+
+.positive-delta {
+  background-color: green;
+  color: white;
+}
+
+.negative-delta {
+  background-color: red;
+  color: white;
+}
