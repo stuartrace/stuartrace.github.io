@@ -4,7 +4,7 @@ body {
 }
 
 .page-title {
-  font-size: 2.25rem;
+  font-size: 2rem;
   font-weight: bold;
 }
 
@@ -71,6 +71,8 @@ th {
 @media only screen and (max-width: 600px) {
   .row-split {
     display: block;
+    margin-top: 5px;
+    width: 90vw;
   }
 }
 
