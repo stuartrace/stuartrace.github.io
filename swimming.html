@@ -29,8 +29,10 @@
           <option id="Male">Male</option>
           <option id="Female">Female</option>
         </select>
-        <label for="name">Name</label><input id="name" type="text" size="12"/>
-        <input type="button" value="Save details" onClick="saveData()"/>
+        <span class="row-split">
+          <label for="name">Name</label><input id="name" type="text" size="12"/>
+          <input type="button" value="Save details" onClick="saveData()"/>  
+        </span>
       </div>
     </div>
     <div class="row">
@@ -50,9 +52,11 @@
           <option id="200">200m</option>
           <option id="400">400m</option>
         </select>
-        <label for="time-entry">Time</label>
-        <input type="text" id="time-entry" size="8">
-        <input type="button" value="Save time" onClick="saveTime()">
+        <span class="row-split">
+          <label for="time-entry">Time</label>
+          <input type="text" id="time-entry" size="8">
+          <input type="button" value="Save time" onClick="saveTime()">
+        </span>
       </div>
     </div>
     <div id="output"></div>
