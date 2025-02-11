@@ -11,22 +11,24 @@
     <h1>County times calculator</h1>
     <h2>Swimmer details</h2>
     <div class="row">
-      <label for="age">Age</label>
-      <select id="age">
-        <option id="10">10</option>
-        <option id="11">11</option>
-        <option id="12">12</option>
-        <option id="13">13</option>
-        <option id="14">14</option>
-        <option id="15">15</option>
-        <option id="16">16</option>
-      </select>
-      <label for="category">Category</label>
-      <select id="category">
-        <option id="Male">Male</option>
-        <option id="Female">Female</option>
-      </select>
-      <label for="name">Name</label><input id="name" type="text" />
+      <div class="card">
+        <label for="age">Age</label>
+        <select id="age">
+          <option id="10">10</option>
+          <option id="11">11</option>
+          <option id="12">12</option>
+          <option id="13">13</option>
+          <option id="14">14</option>
+          <option id="15">15</option>
+          <option id="16">16</option>
+        </select>
+        <label for="category">Category</label>
+        <select id="category">
+          <option id="Male">Male</option>
+          <option id="Female">Female</option>
+        </select>
+        <label for="name">Name</label><input id="name" type="text" />
+      </div>
     </div>
     <input type="button" value="Save details" onClick="saveData()"/>
     <div id="output"></div>
