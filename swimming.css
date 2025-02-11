@@ -3,6 +3,20 @@ body {
   color: #fff;
 }
 
+label {
+  margin-right: 5px;
+}
+
+select {
+  margin-right: 10px;
+}
+
+.card {
+  border: 1px solid white;
+  border-radius: 5px;
+  box-shadow: 5px 5px 5px #bbb;
+}
+
 table {
   border: 1px solid white;
   border-radius: 5px;
