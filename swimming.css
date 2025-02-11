@@ -68,6 +68,12 @@ th {
   color: white;
 }
 
+@media only screen and (max-width: 600px) {
+  .row-split {
+    display: block;
+  }
+}
+
 .negative-delta {
   background-color: red;
   color: white;
