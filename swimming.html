@@ -127,15 +127,15 @@
         const age = document.getElementById("age").value;
         const name = document.getElementById("name").value;
         const category = document.getElementById("category").value;
-        localStorage.setItem("age", age);
-        localStorage.setItem("name", name);
-        localStorage.setItem("category", category);
+        localStorage.setItem("child1-age", age);
+        localStorage.setItem("child1-name", name);
+        localStorage.setItem("child1-category", category);
       }
       
       function loadData() {
-        const age = localStorage.getItem("age")
-        const name = localStorage.getItem("name")
-        const category = localStorage.getItem("category");
+        const age = localStorage.getItem("child1-age")
+        const name = localStorage.getItem("child1-name")
+        const category = localStorage.getItem("child1-category");
         if (!age?.length > 0 || !name?.length > 0 || !category?.length) {
           document.getElementById("output").innerHTML = "Select a name, age and category to continue";
           return;
@@ -148,7 +148,6 @@
         const distances = ["50m", "100m", "200m", "400m"]
         const types = ["Back", "Breast", "Butterfly", "Free"]
         
-        //document.getElementById("output").innerHTML += `<h2>Stored times:</h2>`
         let rowHtml = "";
         
         for (const distance of distances) {
@@ -185,8 +184,6 @@
       }
       
       loadData()
-      
-      
       
     </script>
     <style type="text/css">
