@@ -56,7 +56,7 @@
       </div>
     </div>
     <div id="output"></div>
-    <h3>Personal bests</h3>
+    <div class="sub-title">Personal bests</div>
     <table>
       <thead>
         <tr>
@@ -134,39 +134,40 @@
       }
       
       function loadData() {
-        const age = localStorage.getItem("child1-age")
-        const name = localStorage.getItem("child1-name")
+        const age = localStorage.getItem("child1-age");
+        const name = localStorage.getItem("child1-name");
         const category = localStorage.getItem("child1-category");
         if (!age?.length > 0 || !name?.length > 0 || !category?.length) {
           document.getElementById("output").innerHTML = "Select a name, age and category to continue";
           return;
         }
-        document.getElementById("output").innerHTML = `${name} is aged ${age}`
+        document.getElementById("output").innerHTML = `${name} is aged ${age}`;
         document.getElementById("age").value = age;
         document.getElementById("name").value = name;
         document.getElementById("category").value = category;
         
-        const distances = ["50m", "100m", "200m", "400m"]
-        const types = ["Back", "Breast", "Butterfly", "Free"]
+        const distances = ["50m", "100m", "200m", "400m"];
+        const types = ["Back", "Breast", "Butterfly", "Free"];
         
         let rowHtml = "";
         
         for (const distance of distances) {
           for (const type of types) {
-            rowHtml ="<tr>";
+            
             const thisTime = localStorage.getItem(`child1-event-${type}-${distance}`)
             if (thisTime !== null) {
-              rowHtml += `<td>${distance}</td><td>${type}</td><td class="time-cell">${thisTime}</td>`
+              rowHtml = "<tr>";
+              rowHtml += `<td>${distance}</td><td>${type}</td><td class="time-cell">${thisTime}</td>`;
               try {
-                const countyTime = times[distance][type][age]
-                rowHtml += `<td class="time-cell">${countyTime}</td>`
-                const delta = Number.parseFloat(thisTime) - Number.parseFloat(countyTime)
-                rowHtml += `<td class="time-cell ${delta > 0 ? 'negative-delta' : 'positive-delta'}">${delta.toFixed(2)}</td>`
+                const countyTime = times[distance][type][age];
+                rowHtml += `<td class="time-cell">${countyTime}</td>`;
+                const delta = Number.parseFloat(thisTime) - Number.parseFloat(countyTime);
+                rowHtml += `<td class="time-cell ${delta > 0 ? 'negative-delta' : 'positive-delta'}">${delta.toFixed(2)}</td>`;
               } catch (err) {
-                console.log("err", err)
-                rowHtml += `<td class="time-cell"></td><td class="time-cell"></td>`
+                console.log("err", err);
+                rowHtml += `<td class="time-cell"></td><td class="time-cell"></td>`;
               }
-              
+              rowHtml += "</tr>";
             }
             document.getElementById("times-table").innerHTML += rowHtml; 
           }
@@ -179,12 +180,12 @@
         const timeEntry = document.getElementById("time-entry").value
         
         localStorage.setItem(`child1-event-${type}-${distance}`, timeEntry);
-        document.getElementById("times-table").innerHTML = ""
+        document.getElementById("times-table").innerHTML = "";
         
         loadData();
       }
       
-      loadData()
+      loadData();
       
     </script>
     <style type="text/css">
