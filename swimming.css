@@ -1,12 +1,20 @@
 body {
   background-color: #111;
   color: #fff;
+  margin: 0;
+}
+
+.content {
   padding: 15px;
 }
 
 .page-title {
   font-size: 2rem;
-  font-weight: bold;
+    font-weight: bold;
+    background-color: #06329f;
+    padding-left: 10px;
+    padding-right: 10px;
+    text-align: center;
 }
 
 .sub-title {
@@ -39,7 +47,7 @@ select {
   border-radius: 5px;
 /*   box-shadow: 4px 4px 5px #555; */
   background-color: #222;
-  display: inline-block;
+/*   display: inline-block; */
   padding: 10px;
   margin-top: 5px;
   margin-bottom: 15px;
