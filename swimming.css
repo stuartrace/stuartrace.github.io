@@ -9,6 +9,8 @@ body {
 
 .sub-title {
   font-size: 1.5rem;
+  margin-bottom: 5px;
+  font-weight: bold;
 }
 
 input[type="button"] {
