@@ -8,9 +8,11 @@
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0" />
   </head>
   <body>
-    <h1>County times calculator</h1>
-    <h2>Swimmer details</h2>
+    <div class="page-title">
+      <h1>County times calculator</h1>
+    </div>
     <div class="row">
+      <h2>Swimmer details</h2>
       <div class="card">
         <label for="age">Age</label>
         <select id="age">
@@ -28,9 +30,31 @@
           <option id="Female">Female</option>
         </select>
         <label for="name">Name</label><input id="name" type="text" />
+        <input type="button" value="Save details" onClick="saveData()"/>
       </div>
     </div>
-    <input type="button" value="Save details" onClick="saveData()"/>
+    <div class="row">
+      <div class="card">
+        <h2>Enter a time</h2>
+        <label for="type">Type</label>
+        <select id="type">
+          <option id="Back">Back</option>
+          <option id="Breast">Breast</option>
+          <option id="Butterfly">Butterfly</option>
+          <option id="Free">Free</option>
+        </select>
+        <label for="distance">Distance</label>
+        <select id="distance">
+          <option id="50">50m</option>
+          <option id="100">100m</option>
+          <option id="200">200m</option>
+          <option id="400">400m</option>
+        </select>
+        <label for="time-entry">Time</label>
+        <input type="text" id="time-entry">
+        <input type="button" value="Save time" onClick="saveTime()">
+      </div>
+    </div>
     <div id="output"></div>
     <h3>Personal bests</h3>
     <table>
@@ -46,25 +70,7 @@
       <tbody id="times-table"></tbody>
     </table>
     <hr />
-    <div class="row">
-      <label for="type">Type</label>
-      <select id="type">
-        <option id="Back">Back</option>
-        <option id="Breast">Breast</option>
-        <option id="Butterfly">Butterfly</option>
-        <option id="Free">Free</option>
-      </select>
-      <label for="distance">Distance</label>
-      <select id="distance">
-        <option id="50">50m</option>
-        <option id="100">100m</option>
-        <option id="200">200m</option>
-        <option id="400">400m</option>
-      </select>
-      <label for="time-entry">Time</label>
-      <input type="text" id="time-entry">
-      <input type="button" value="Save time" onClick="saveTime()">
-    </div>
+    
     
     <script type="text/javascript">
       const times = {
