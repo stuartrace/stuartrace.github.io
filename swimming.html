@@ -11,68 +11,70 @@
     <div class="page-title">
       County times calculator
     </div>
-    <div class="row">
-      <div class="card">
-        <div class="sub-title">Swimmer details</div>
-        <label for="age">Age</label>
-        <select id="age">
-          <option id="10">10</option>
-          <option id="11">11</option>
-          <option id="12">12</option>
-          <option id="13">13</option>
-          <option id="14">14</option>
-          <option id="15">15</option>
-          <option id="16">16</option>
-        </select>
-        <label for="category">Category</label>
-        <select id="category">
-          <option id="Male">Male</option>
-          <option id="Female">Female</option>
-        </select>
-        <span class="row-split">
-          <label for="name">Name</label><input id="name" type="text" size="12"/>
-          <input type="button" value="Save details" onClick="saveData()"/>  
-        </span>
+    <div class="content">
+      <div class="row">
+        <div class="card">
+          <div class="sub-title">Swimmer details</div>
+          <label for="age">Age</label>
+          <select id="age">
+            <option id="10">10</option>
+            <option id="11">11</option>
+            <option id="12">12</option>
+            <option id="13">13</option>
+            <option id="14">14</option>
+            <option id="15">15</option>
+            <option id="16">16</option>
+          </select>
+          <label for="category">Category</label>
+          <select id="category">
+            <option id="Male">Male</option>
+            <option id="Female">Female</option>
+          </select>
+          <span class="row-split">
+            <label for="name">Name</label><input id="name" type="text" size="12"/>
+            <input type="button" value="Save details" onClick="saveData()"/>  
+          </span>
+        </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="card">
-        <div class="sub-title">Enter a time</div>
-        <label for="type">Type</label>
-        <select id="type">
-          <option id="Back">Back</option>
-          <option id="Breast">Breast</option>
-          <option id="Butterfly">Butterfly</option>
-          <option id="Free">Free</option>
-        </select>
-        <label for="distance">Distance</label>
-        <select id="distance">
-          <option id="50">50m</option>
-          <option id="100">100m</option>
-          <option id="200">200m</option>
-          <option id="400">400m</option>
-        </select>
-        <span class="row-split">
-          <label for="time-entry">Time</label>
-          <input type="text" id="time-entry" size="8">
-          <input type="button" value="Save time" onClick="saveTime()">
-        </span>
+      <div class="row">
+        <div class="card">
+          <div class="sub-title">Enter a time</div>
+          <label for="type">Type</label>
+          <select id="type">
+            <option id="Back">Back</option>
+            <option id="Breast">Breast</option>
+            <option id="Butterfly">Butterfly</option>
+            <option id="Free">Free</option>
+          </select>
+          <label for="distance">Distance</label>
+          <select id="distance">
+            <option id="50">50m</option>
+            <option id="100">100m</option>
+            <option id="200">200m</option>
+            <option id="400">400m</option>
+          </select>
+          <span class="row-split">
+            <label for="time-entry">Time</label>
+            <input type="text" id="time-entry" size="8">
+            <input type="button" value="Save time" onClick="saveTime()">
+          </span>
+        </div>
       </div>
+      <div id="output"></div>
+      <div class="sub-title">Personal bests</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Distance</th>
+            <th>Type</th>
+            <th>Time</th>
+            <th>County time</th>
+            <th>Delta</th>
+          </tr>  
+        </thead>
+        <tbody id="times-table"></tbody>
+      </table>
     </div>
-    <div id="output"></div>
-    <div class="sub-title">Personal bests</div>
-    <table>
-      <thead>
-        <tr>
-          <th>Distance</th>
-          <th>Type</th>
-          <th>Time</th>
-          <th>County time</th>
-          <th>Delta</th>
-        </tr>  
-      </thead>
-      <tbody id="times-table"></tbody>
-    </table>
     
     <script type="text/javascript">
       const times = {
