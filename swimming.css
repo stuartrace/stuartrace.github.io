@@ -78,15 +78,19 @@ th {
   color: white;
 }
 
+.negative-delta {
+  background-color: red;
+  color: white;
+}
+
 @media only screen and (max-width: 600px) {
   .row-split {
     display: block;
     margin-top: 5px;
     width: 90vw;
   }
-}
 
-.negative-delta {
-  background-color: red;
-  color: white;
+  .page-title {
+    font-size: 8vw;
+  }
 }
