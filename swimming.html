@@ -154,7 +154,7 @@
         for (const distance of distances) {
           for (const type of types) {
             rowHtml ="<tr>";
-            const thisTime = localStorage.getItem(`event-${type}-${distance}`)
+            const thisTime = localStorage.getItem(`child1-event-${type}-${distance}`)
             if (thisTime !== null) {
               rowHtml += `<td>${distance}</td><td>${type}</td><td class="time-cell">${thisTime}</td>`
               try {
@@ -178,7 +178,7 @@
         const distance = document.getElementById("distance").value
         const timeEntry = document.getElementById("time-entry").value
         
-        localStorage.setItem(`event-${type}-${distance}`, timeEntry);
+        localStorage.setItem(`child1-event-${type}-${distance}`, timeEntry);
         document.getElementById("times-table").innerHTML = ""
         
         loadData();
