@@ -100,6 +100,10 @@ tr td.negative-delta {
   color: white;
 }
 
+.delete-cross {
+  cursor: pointer;
+}
+
 .note {
   font-style: italic;
   font-size: 0.9rem;

@@ -34,7 +34,7 @@
         </div>
       </div>
       <div id="output"></div>
-      <div class="row">
+      <div class="row" id="enter-times-row">
         <div class="card">
           <div class="sub-title">Enter a time</div>
           <span class="row-split">
@@ -410,8 +410,12 @@
         if (!age?.length > 0 || !name?.length > 0 || !category?.length) {
           document.getElementById("output").innerHTML =
             "Select a name, age and category to continue";
+          document.getElementById("enter-times-row").style.display = "none";
           return;
         }
+
+        document.getElementById("output").innerHTML = "";
+        document.getElementById("enter-times-row").style.display = "block";
         document.getElementById("age").value = age;
         document.getElementById("name").value = name;
         document.getElementById("category").value = category;
@@ -452,7 +456,7 @@
                     : "positive-delta"
                 }">${
                   isNaN(delta) ? "n/a" : delta.toFixed(2)
-                }</td><td onClick="deleteTime('child1', '${type}', '${distance}')">X</td>`;
+                }</td><td class="delete-cross" onClick="deleteTime('child1', '${type}', '${distance}')">X</td>`;
               } catch (err) {
                 console.log("err", err);
                 rowHtml += `<td class="time-cell"></td><td class="time-cell"></td><td></td>`;
@@ -468,6 +472,13 @@
         const type = document.getElementById("type").value;
         const distance = document.getElementById("distance").value;
         const timeEntry = document.getElementById("time-entry").value;
+
+        const secondsRegExp = /^[0-5]{1,2}\.[0-9]{1,2}$/g;
+        const minutesRegExp = /^[0-9]{1}:[0-5]{2}\.[0-9]{1,2}$/g;
+        if (!secondsRegExp.test(timeEntry) && !minutesRegExp.test(timeEntry)) {
+          alert("Time entry must use the format 1:23.45 or 12.34");
+          return;
+        }
 
         localStorage.setItem(`child1-event-${type}-${distance}`, timeEntry);
 
