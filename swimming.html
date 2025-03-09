@@ -475,10 +475,10 @@
 
         const secondsRegExp = /^[0-5]{1,2}\.[0-9]{1,2}$/g;
         const minutesRegExp = /^[0-9]{1}:[0-5]{2}\.[0-9]{1,2}$/g;
-        if (!secondsRegExp.test(timeEntry) && !minutesRegExp.test(timeEntry)) {
+        /* if (!secondsRegExp.test(timeEntry) && !minutesRegExp.test(timeEntry)) {
           alert("Time entry must use the format 1:23.45 or 12.34");
           return;
-        }
+        }*/
 
         localStorage.setItem(`child1-event-${type}-${distance}`, timeEntry);
 
