@@ -29,6 +29,7 @@
               <option id="Female">Female</option>
             </select>
             <label for="name">Name</label><input id="name" type="text" />
+            <label for="swimmerNumber">ASA Number</label><input type="number" id="swimmerNumber" />
           </span>
           <input type="button" value="Save details" onClick="saveData()" />
         </div>
@@ -53,7 +54,7 @@
               <option id="400">400m</option>
             </select>
             <label for="time-entry">Time</label>
-            <input type="text" id="time-entry" size="8" />
+            <input type="text" id="time-entry" size="8" placeholder="e.g. 54.32 or 1:54.32"/>
           </span>
           <input type="button" value="Save time" onClick="saveTime()" />
         </div>
@@ -78,8 +79,6 @@
         far. All personal bests are stored in your browser on the device you're
         using.
       </div>
-
-      <iframe src="https://www.swimmingresults.org/biogs/biogs_details.php?tiref=1732229" width="100%" height="500px"></iframe>
     </div>
 
     <script type="text/javascript">
@@ -398,9 +397,11 @@
         const age = document.getElementById("age").value;
         const name = document.getElementById("name").value;
         const category = document.getElementById("category").value;
+        const swimmerNumber = document.getElementById("swimmerNumber").value;
         localStorage.setItem("child1-age", age);
         localStorage.setItem("child1-name", name);
         localStorage.setItem("child1-category", category);
+        localStorage.setItem("child1-swimmer-number", swimmerNumber);
         loadData();
       }
 
@@ -409,6 +410,7 @@
         const age = localStorage.getItem("child1-age");
         const name = localStorage.getItem("child1-name");
         const category = localStorage.getItem("child1-category");
+        const swimmerNumber = local storage.getItem("child1-swimmer-number");
         if (!age?.length > 0 || !name?.length > 0 || !category?.length) {
           document.getElementById("output").innerHTML =
             "Select a name, age and category to continue";
@@ -420,6 +422,7 @@
         document.getElementById("enter-times-row").style.display = "block";
         document.getElementById("age").value = age;
         document.getElementById("name").value = name;
+        document.getElementById("swimmerNumber").value = swimmerNumber;
         document.getElementById("category").value = category;
 
         const distances = ["50m", "100m", "200m", "400m"];
