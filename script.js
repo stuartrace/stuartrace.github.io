@@ -37,6 +37,14 @@ export function loadData() {
   const swimmersEvents = results.events.filter(event => event.results.some(result => result[0] === swimmerNumber));
   console.log("Events entered", swimmersEvents);
   console.log("Results", swimmersEvents.filter(event => event.results.filter(result => result[0] === swimmerNumber)));
+  // console.log("Evs", const targetID = "ID1";
+
+const matchingResults = events.flatMap(event =>
+    event.results.filter(result => result[0] === swimmerNumber)
+);
+
+console.log("EVS", matchingResults);
+
   
   document.getElementById("output").innerHTML = "";
   document.getElementById("enter-times-row").style.display = "block";
