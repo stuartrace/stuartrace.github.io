@@ -1,5 +1,5 @@
 import { getData } from './swimming-county-times.js';
-import { getResults } from "./swimming-results.js';
+import { getResults } from './swimming-results.js';
 console.log("times", getData())
 console.log("results", getResults())
 
