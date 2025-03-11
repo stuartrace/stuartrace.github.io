@@ -39,7 +39,7 @@ export function loadData() {
   console.log("Results", swimmersEvents.filter(event => event.results.filter(result => result[0] === swimmerNumber)));
   // console.log("Evs", const targetID = "ID1";
 
-const matchingResults = events.flatMap(event =>
+const matchingResults = swimmersEvents.flatMap(event =>
     event.results.filter(result => result[0] === swimmerNumber)
 );
 
