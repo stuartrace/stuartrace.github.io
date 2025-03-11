@@ -46,7 +46,7 @@ export function loadData() {
 
   let swimmerMap = {}
 
-  for (res of matchingResults) {
+  for (const res of matchingResults) {
     const distance = res[5].split(" ")[0];
     const style = res[5].split(" ")[1];
     swimmmerMap[distance][style].time = res[7];
