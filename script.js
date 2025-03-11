@@ -37,13 +37,23 @@ export function loadData() {
   const swimmersEvents = results.events.filter(event => event.results.some(result => result[0] === swimmerNumber));
   console.log("Events entered", swimmersEvents);
   console.log("Results", swimmersEvents.filter(event => event.results.filter(result => result[0] === swimmerNumber)));
-  // console.log("Evs", const targetID = "ID1";
 
-const matchingResults = swimmersEvents.flatMap(event =>
-    event.results.filter(result => result[0] === swimmerNumber)
-);
+  const matchingResults = swimmersEvents.flatMap(event =>
+      event.results.filter(result => result[0] === swimmerNumber)
+  );
+  
+  console.log("EVS", matchingResults);
 
-console.log("EVS", matchingResults);
+  let swimmerMap = {}
+
+  for (res of matchingResults) {
+    const distance = res[5].split(" ")[0];
+    const style = res[5].split(" ")[1];
+    swimmmerMap[distance][style].time = res[7];
+    console.log("Adding", distance, style, res[7]);
+  }
+
+  console.log("swimmerMap", swimmerMap);
 
   
   document.getElementById("output").innerHTML = "";
