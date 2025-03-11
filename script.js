@@ -49,6 +49,13 @@ export function loadData() {
   for (const res of matchingResults) {
     const distance = res[5].split(" ")[0];
     const style = res[5].split(" ")[1];
+    if (!swimmerMap[distance]) {
+      swimmerMap[distance] = {}
+    }
+
+    if (!swimmerMap[distance][style]) {
+      swimmerMap[distance][style] = {}
+    }
     swimmerMap[distance][style].time = res[7];
     console.log("Adding", distance, style, res[7]);
   }
