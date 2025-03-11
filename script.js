@@ -1,9 +1,10 @@
-console.log("Hello")
-
 import { getData } from './swimming-county-times.js';
+import { getResults } from "./swimming-results.js';
 console.log("times", getData())
+console.log("results", getResults())
 
 const countyTimesData = getData();
+const results = getResults();
 
 function saveData() {
   console.log("Saving")
@@ -15,7 +16,6 @@ function saveData() {
   localStorage.setItem("child1-name", name);
   localStorage.setItem("child1-category", category);
   localStorage.setItem("child1-swimmer-number", swimmerNumber);
-  console.log("age is", age)
   loadData();
 }
 
