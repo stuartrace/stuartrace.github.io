@@ -34,9 +34,9 @@ export function loadData() {
     return;
   }
 
-  const swimmersEvents = results.filter(event => event.results.some(result => result[0] === swimmerNumber)
+  const swimmersEvents = results.filter(event => event.results.some(result => result[0] === swimmerNumber));
   console.log("Events entered", swimmersEvents);
-  console.log("Results", swimmersEvents.filter(event => event.results.filter(result => result[0] === swimmerNumber)))
+  console.log("Results", swimmersEvents.filter(event => event.results.filter(result => result[0] === swimmerNumber)));
   
   document.getElementById("output").innerHTML = "";
   document.getElementById("enter-times-row").style.display = "block";
