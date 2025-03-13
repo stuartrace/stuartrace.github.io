@@ -90,14 +90,32 @@ th {
   min-width: 3rem;
 }
 
-tr td.positive-delta {
-  background-color: green;
-  color: white;
+.event-card {
+  border: 1px solid white;
+  border-radius: 5px;
+  padding: 10px;
 }
 
-tr td.negative-delta {
+.event-card-top-row {
+  font-size: 1.25rem;
+  display: grid;
+  grid-template-columns: auto 15% 15%;
+  column-gap: 5px;
+  margin-bottom: 5px;
+}
+
+tr td.positive-delta,
+div.positive-delta {
+  background-color: green;
+  color: white;
+  padding: 3px;
+}
+
+tr td.negative-delta,
+div.negative-delta {
   background-color: red;
   color: white;
+  padding: 3px;
 }
 
 .delete-cross {
@@ -127,6 +145,6 @@ tr td.negative-delta {
   }
 
   .page-title {
-    font-size: 8vw;
+    font-size: 7vw;
   }
 }

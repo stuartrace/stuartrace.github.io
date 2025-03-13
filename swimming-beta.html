@@ -30,7 +30,8 @@
               <option id="Female">Female</option>
             </select>
             <label for="name">Name</label><input id="name" type="text" />
-            <label for="swimmerNumber">ASA Number</label><input type="number" id="swimmerNumber" />
+            <label for="swimmerNumber">ASA Number</label
+            ><input type="number" id="swimmerNumber" />
           </span>
           <input type="button" value="Save details" onClick="saveData()" />
         </div>
@@ -55,30 +56,54 @@
               <option id="400">400m</option>
             </select>
             <label for="time-entry">Time</label>
-            <input type="text" id="time-entry" size="8" placeholder="e.g. 54.32 or 1:54.32"/>
+            <input
+              type="text"
+              id="time-entry"
+              size="8"
+              placeholder="e.g. 54.32 or 1:54.32"
+            />
           </span>
           <input type="button" value="Save time" onClick="saveTime()" />
         </div>
       </div>
-      <div class="sub-title">Personal bests</div>
-      <table>
-        <thead>
-          <tr>
-            <th>Distance</th>
-            <th>Type</th>
-            <th>Time</th>
-            <th>County time</th>
-            <th>Delta</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="times-table"></tbody>
-      </table>
+      <div class="card">
+        <div class="sub-title">Best event times</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Distance</th>
+              <th>Type</th>
+              <th>Time</th>
+              <th>County time</th>
+              <th>Delta</th>
+            </tr>
+          </thead>
+          <tbody id="recorded-times-table"></tbody>
+        </table>
 
-      <div class="note">
-        Please note, only 50m and 100m Suffolk county times have been entered so
-        far. All personal bests are stored in your browser on the device you're
-        using.
+        <div id="recorded-times-cards"></div>
+      </div>
+      <div class="card">
+        <div class="sub-title">Personal bests</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Distance</th>
+              <th>Type</th>
+              <th>Time</th>
+              <th>County time</th>
+              <th>Delta</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="times-table"></tbody>
+        </table>
+
+        <div class="note">
+          Please note, only 50m and 100m Suffolk county times have been entered
+          so far. All personal bests are stored in your browser on the device
+          you're using.
+        </div>
       </div>
     </div>
 
