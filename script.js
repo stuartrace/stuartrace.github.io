@@ -22,7 +22,7 @@ function saveData() {
 export function loadData() {
   console.log("loading");
   document.getElementById("times-table").innerHTML = "";
-  document.getElementById("recorded-times-table").innerHTML = "";
+  document.getElementById("recorded-times-cards").innerHTML = "";
   const age = localStorage.getItem("child1-age");
   const name = localStorage.getItem("child1-name");
   const category = localStorage.getItem("child1-category");
@@ -62,8 +62,9 @@ export function loadData() {
       (result) => result[0] === swimmerNumber
     );
     for (const result of swimmersResults) {
+      const distanceNum = result[5].split(" ")[0];
       const distance = result[5].split(" ")[0] + "m";
-      const style = result[5].split(" ")[1];
+      const style = result[5].split(distanceNum + " ")[1];
       if (!swimmerMap[distance]) {
         swimmerMap[distance] = {};
       }
@@ -87,12 +88,13 @@ export function loadData() {
   document.getElementById("category").value = category;
 
   const distances = ["50m", "100m", "200m", "400m"];
-  const personalTypes = ["Back", "Breast", "Butterfly", "Free"];
+  const personalTypes = ["Back", "Breast", "Butterfly", "Free", "IM"];
   const recordedTypes = [
     "Backstroke",
     "Breaststroke",
     "Butterfly",
     "Freestyle",
+    "Individual Medley",
   ];
 
   let rowHtml = "";
@@ -136,6 +138,14 @@ export function loadData() {
     }
   }
 
+  const eventTimesTypeMap = {
+    Backstroke: "Back",
+    "Individual Medley": "IM",
+    Freestyle: "Free",
+    Breaststroke: "Breast",
+    Butterfly: "Fly",
+  };
+
   // Render recorded times
   for (const distance of distances) {
     for (const type of recordedTypes) {
@@ -151,8 +161,6 @@ export function loadData() {
 
       if (thisTime !== null) {
         const printableTime = thisTime;
-        rowHtml = "<tr>";
-        rowHtml += `<td>${distance}</td><td>${type}</td><td class="time-cell">${thisTime}</td>`;
 
         if (thisTime.includes(":")) {
           thisTime =
@@ -161,25 +169,21 @@ export function loadData() {
         }
         try {
           let countyTime = countyTimesData[category][distance][type][age];
-          rowHtml += `<td class="time-cell">${countyTime}</td>`;
           if (countyTime?.includes(":")) {
             countyTime =
               parseFloat(countyTime.split(":")[0]) * 60 +
               parseFloat(countyTime.split(":")[1]);
           }
           delta = Number.parseFloat(thisTime) - Number.parseFloat(countyTime);
-          rowHtml += `<td class="time-cell ${
-            isNaN(delta) || delta > 0 ? "negative-delta" : "positive-delta"
-          }">${isNaN(delta) ? "n/a" : delta.toFixed(2)}</td>`;
         } catch (err) {
           console.log("err", err);
-          rowHtml += `<td class="time-cell"></td><td class="time-cell"></td>`;
         }
-        rowHtml += "</tr>";
 
         let cardHtml = "";
         cardHtml += "<div class='event-card'>";
-        cardHtml += `<div class='event-card-top-row'><div class='event-title'>${distance} ${type}</div><div>${printableTime}</div> <div class="time-cell ${
+        cardHtml += `<div class='event-card-top-row'><div class='event-title'>${distance} ${
+          eventTimesTypeMap[type]
+        }</div><div class="time-cell">${printableTime}</div> <div class="time-cell ${
           delta > 0 ? "negative-delta" : "positive-delta"
         }">${delta.toFixed(2)}</div></div>`;
         cardHtml += `<div>At: ${swimmerMap[distance][type].eventName} on: ${swimmerMap[distance][type].date}</div>`;
@@ -187,9 +191,15 @@ export function loadData() {
 
         document.getElementById("recorded-times-cards").innerHTML += cardHtml;
       }
-      // document.getElementById("recorded-times-table").innerHTML += rowHtml;
     }
   }
+
+  if (Object.keys(swimmerMap).length === 0) {
+    document.getElementById("recorded-times-cards").innerHTML +=
+      "No swims found";
+  }
+
+  console.log("number", Object.keys(swimmerMap));
 }
 
 function saveTime() {

@@ -94,28 +94,32 @@ th {
   border: 1px solid white;
   border-radius: 5px;
   padding: 10px;
+  margin-bottom: 10px;
 }
 
 .event-card-top-row {
   font-size: 1.25rem;
   display: grid;
-  grid-template-columns: auto 15% 15%;
+  grid-template-columns: auto 22% 16%;
   column-gap: 5px;
   margin-bottom: 5px;
+}
+
+tr td.time-cell,
+div.time-cell {
+  padding: 3px;
 }
 
 tr td.positive-delta,
 div.positive-delta {
   background-color: green;
   color: white;
-  padding: 3px;
 }
 
 tr td.negative-delta,
 div.negative-delta {
   background-color: red;
   color: white;
-  padding: 3px;
 }
 
 .delete-cross {
