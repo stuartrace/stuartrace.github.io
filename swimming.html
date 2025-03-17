@@ -2,9 +2,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Swimming times calculator</title>
+    <title>Swimming times calculator (b)</title>
     <link rel="stylesheet" href="./swimming.css" />
     <script src="jquery-3.7.1.min.js"></script>
+    <script type="module" src="script.js"></script>
   </head>
   <body>
     <div class="page-title">County Times Calculator</div>
@@ -29,6 +30,8 @@
               <option id="Female">Female</option>
             </select>
             <label for="name">Name</label><input id="name" type="text" />
+            <label for="swimmerNumber">ASA Number</label
+            ><input type="number" id="swimmerNumber" />
           </span>
           <input type="button" value="Save details" onClick="saveData()" />
         </div>
@@ -57,446 +60,41 @@
               type="text"
               id="time-entry"
               size="8"
-              placeholder="e.g. 54.21 or 1:23.45"
+              placeholder="e.g. 54.32 or 1:54.32"
             />
           </span>
           <input type="button" value="Save time" onClick="saveTime()" />
         </div>
       </div>
-      <div class="sub-title">Personal bests</div>
-      <table>
-        <thead>
-          <tr>
-            <th>Distance</th>
-            <th>Type</th>
-            <th>Time</th>
-            <th>County time</th>
-            <th>Delta</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="times-table"></tbody>
-      </table>
+      <div class="card">
+        <div class="sub-title">Best event times</div>
 
-      <div class="note">
-        Please note, only 50m and 100m Suffolk county times have been entered so
-        far. All personal bests are stored in your browser on the device you're
-        using.
+        <div id="recorded-times-cards"></div>
+      </div>
+      <div class="card">
+        <div class="sub-title">Personal bests</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Distance</th>
+              <th>Type</th>
+              <th>Time</th>
+              <th>County time</th>
+              <th>Delta</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="times-table"></tbody>
+        </table>
+
+        <div class="note">
+          Please note, only 50m, 100m and 200m Suffolk county times have been
+          entered so far. All personal bests are stored in your browser on the
+          device you're using.
+        </div>
       </div>
     </div>
 
-    <script type="text/javascript">
-      const times = {
-        Male: {
-          "50m": {
-            Back: {
-              10: "46.90",
-              11: "46.90",
-              12: "43.40",
-              13: "37.80",
-              14: "36.60",
-              15: "33.60",
-              16: "32.60",
-            },
-            Breast: {
-              10: "56.80",
-              11: "56.80",
-              12: "50.20",
-              13: "45.80",
-              14: "44.00",
-              15: "41.40",
-              16: "36.50",
-            },
-            Butterfly: {
-              10: "52.90",
-              11: "52.90",
-              12: "46.30",
-              13: "39.80",
-              14: "36.60",
-              15: "33.70",
-              16: "31.00",
-            },
-            Free: {
-              10: "39.10",
-              11: "39.10",
-              12: "36.80",
-              13: "32.30",
-              14: "31.90",
-              15: "29.10",
-              16: "27.00",
-            },
-          },
-          "100m": {
-            Back: {
-              10: "1:35.60",
-              11: "1:35.60",
-              12: "1:33.90",
-              13: "1:21.00",
-              14: "1:19.50",
-              15: "1:12.60",
-              16: "1:10.90",
-            },
-            Breast: {
-              10: "1:58.70",
-              11: "1:58.70",
-              12: "1:52.40",
-              13: "1:38.80",
-              14: "1:35.00",
-              15: "1:25.00",
-              16: "1:18.90",
-            },
-            Butterfly: {
-              10: "1:55.00",
-              11: "1:55.00",
-              12: "1:40.20",
-              13: "1:34.00",
-              14: "1:32.10",
-              15: "1:20.00",
-              16: "1:14.00",
-            },
-            Free: {
-              10: "1:27.60",
-              11: "1:27.60",
-              12: "1:24.20",
-              13: "1:11.70",
-              14: "1:09.90",
-              15: "1:05.00",
-              16: "59.50",
-            },
-          },
-          "200m": {
-            Back: {
-              10: "",
-              11: "",
-              12: "",
-              13: "",
-              14: "",
-              15: "",
-              16: "",
-            },
-            Breast: {
-              10: "",
-              11: "",
-              12: "",
-              13: "",
-              14: "",
-              15: "",
-              16: "",
-            },
-            Butterfly: {
-              10: "",
-              11: "",
-              12: "",
-              13: "",
-              14: "",
-              15: "",
-              16: "",
-            },
-            Free: {
-              10: "",
-              11: "",
-              12: "",
-              13: "",
-              14: "",
-              15: "",
-              16: "",
-            },
-          },
-          "400m": {
-            Back: {
-              10: "",
-              11: "",
-              12: "",
-              13: "",
-              14: "",
-              15: "",
-              16: "",
-            },
-            Breast: {
-              10: "",
-              11: "",
-              12: "",
-              13: "",
-              14: "",
-              15: "",
-              16: "",
-            },
-            Butterfly: {
-              10: "",
-              11: "",
-              12: "",
-              13: "",
-              14: "",
-              15: "",
-              16: "",
-            },
-            Free: {
-              10: "",
-              11: "",
-              12: "",
-              13: "",
-              14: "",
-              15: "",
-              16: "",
-            },
-          },
-        },
-        Female: {
-          "50m": {
-            Back: {
-              10: "46.7",
-              11: "46.7",
-              12: "41.50",
-              13: "39.10",
-              14: "37.30",
-              15: "35.80",
-              16: "35.30",
-            },
-            Breast: {
-              10: "54.50",
-              11: "54.50",
-              12: "49.10",
-              13: "45.60",
-              14: "42.20",
-              15: "41.30",
-              16: "40.90",
-            },
-            Butterfly: {
-              10: "55.10",
-              11: "55.10",
-              12: "43.30",
-              13: "38.20",
-              14: "35.90",
-              15: "33.90",
-              16: "32.90",
-            },
-            Free: {
-              10: "43.20",
-              11: "43.20",
-              12: "35.60",
-              13: "32.40",
-              14: "31.70",
-              15: "30.50",
-              16: "30.30",
-            },
-          },
-          "100m": {
-            Back: {
-              10: "1:44.60",
-              11: "1:44.60",
-              12: "1:33.00",
-              13: "1:27.60",
-              14: "1:21.30",
-              15: "1:17.30",
-              16: "1:16.20",
-            },
-            Breast: {
-              10: "2:02.10",
-              11: "2:02.10",
-              12: "1:50.00",
-              13: "1:40.40",
-              14: "1:32.80",
-              15: "1:29.30",
-              16: "1:24.70",
-            },
-            Butterfly: {
-              10: "2:09.60",
-              11: "2:09.60",
-              12: "1:41.80",
-              13: "1:34.70",
-              14: "1:25.30",
-              15: "1:16.90",
-              16: "1:14.60",
-            },
-            Free: {
-              10: "1:36.80",
-              11: "1:36.80",
-              12: "1:19.70",
-              13: "1:09.70",
-              14: "1:05.90",
-              15: "1:05.40",
-              16: "1:02.00",
-            },
-          },
-          "200m": {
-            Back: {
-              10: "",
-              11: "",
-              12: "",
-              13: "",
-              14: "",
-              15: "",
-              16: "",
-            },
-            Breast: {
-              10: "",
-              11: "",
-              12: "",
-              13: "",
-              14: "",
-              15: "",
-              16: "",
-            },
-            Butterfly: {
-              10: "",
-              11: "",
-              12: "",
-              13: "",
-              14: "",
-              15: "",
-              16: "",
-            },
-            Free: {
-              10: "",
-              11: "",
-              12: "",
-              13: "",
-              14: "",
-              15: "",
-              16: "",
-            },
-          },
-          "400m": {
-            Back: {
-              10: "",
-              11: "",
-              12: "",
-              13: "",
-              14: "",
-              15: "",
-              16: "",
-            },
-            Breast: {
-              10: "",
-              11: "",
-              12: "",
-              13: "",
-              14: "",
-              15: "",
-              16: "",
-            },
-            Butterfly: {
-              10: "",
-              11: "",
-              12: "",
-              13: "",
-              14: "",
-              15: "",
-              16: "",
-            },
-            Free: {
-              10: "",
-              11: "",
-              12: "",
-              13: "",
-              14: "",
-              15: "",
-              16: "",
-            },
-          },
-        },
-      };
-
-      function saveData() {
-        const age = document.getElementById("age").value;
-        const name = document.getElementById("name").value;
-        const category = document.getElementById("category").value;
-        localStorage.setItem("child1-age", age);
-        localStorage.setItem("child1-name", name);
-        localStorage.setItem("child1-category", category);
-        loadData();
-      }
-
-      function loadData() {
-        document.getElementById("times-table").innerHTML = "";
-        const age = localStorage.getItem("child1-age");
-        const name = localStorage.getItem("child1-name");
-        const category = localStorage.getItem("child1-category");
-        if (!age?.length > 0 || !name?.length > 0 || !category?.length) {
-          document.getElementById("output").innerHTML =
-            "Select a name, age and category to continue";
-          document.getElementById("enter-times-row").style.display = "none";
-          return;
-        }
-
-        document.getElementById("output").innerHTML = "";
-        document.getElementById("enter-times-row").style.display = "block";
-        document.getElementById("age").value = age;
-        document.getElementById("name").value = name;
-        document.getElementById("category").value = category;
-
-        const distances = ["50m", "100m", "200m", "400m"];
-        const types = ["Back", "Breast", "Butterfly", "Free"];
-
-        let rowHtml = "";
-
-        for (const distance of distances) {
-          for (const type of types) {
-            rowHtml = "";
-            let thisTime = localStorage.getItem(
-              `child1-event-${type}-${distance}`
-            );
-            if (thisTime !== null) {
-              rowHtml = "<tr>";
-              rowHtml += `<td>${distance}</td><td>${type}</td><td class="time-cell">${thisTime}</td>`;
-
-              if (thisTime.includes(":")) {
-                thisTime =
-                  parseFloat(thisTime.split(":")[0]) * 60 +
-                  parseFloat(thisTime.split(":")[1]);
-              }
-              try {
-                let countyTime = times[category][distance][type][age];
-                rowHtml += `<td class="time-cell">${countyTime}</td>`;
-                if (countyTime?.includes(":")) {
-                  countyTime =
-                    parseFloat(countyTime.split(":")[0]) * 60 +
-                    parseFloat(countyTime.split(":")[1]);
-                }
-                const delta =
-                  Number.parseFloat(thisTime) - Number.parseFloat(countyTime);
-                rowHtml += `<td class="time-cell ${
-                  isNaN(delta) || delta > 0
-                    ? "negative-delta"
-                    : "positive-delta"
-                }">${
-                  isNaN(delta) ? "n/a" : delta.toFixed(2)
-                }</td><td class="delete-cross" onClick="deleteTime('child1', '${type}', '${distance}')">X</td>`;
-              } catch (err) {
-                console.log("err", err);
-                rowHtml += `<td class="time-cell"></td><td class="time-cell"></td><td></td>`;
-              }
-              rowHtml += "</tr>";
-            }
-            document.getElementById("times-table").innerHTML += rowHtml;
-          }
-        }
-      }
-
-      function saveTime() {
-        const type = document.getElementById("type").value;
-        const distance = document.getElementById("distance").value;
-        const timeEntry = document.getElementById("time-entry").value;
-
-        const secondsRegExp = /^[0-5]{1,2}\.[0-9]{1,2}$/g;
-        const minutesRegExp = /^[0-9]{1}:[0-5]{2}\.[0-9]{1,2}$/g;
-        /* if (!secondsRegExp.test(timeEntry) && !minutesRegExp.test(timeEntry)) {
-          alert("Time entry must use the format 1:23.45 or 12.34");
-          return;
-        }*/
-
-        localStorage.setItem(`child1-event-${type}-${distance}`, timeEntry);
-
-        loadData();
-      }
-
-      function deleteTime(child, type, distance) {
-        localStorage.removeItem(`child1-event-${type}-${distance}`);
-        loadData();
-      }
-
-      loadData();
-    </script>
     <style type="text/css">
       .cell {
         display: inline;
