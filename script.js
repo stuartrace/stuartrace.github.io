@@ -72,9 +72,12 @@ export function loadData() {
       if (!swimmerMap[distance][style]) {
         swimmerMap[distance][style] = {};
       }
-      swimmerMap[distance][style].time = result[7];
-      swimmerMap[distance][style].eventName = event.eventName;
-      swimmerMap[distance][style].date = event.date;
+
+      if (!swimmerMap[distance][style].time || result[7] < swimmerMap[distance][style].time) {
+        swimmerMap[distance][style].time = result[7];
+        swimmerMap[distance][style].eventName = event.eventName;
+        swimmerMap[distance][style].date = event.date;
+      }
     }
   }
 
