@@ -219,6 +219,24 @@ function saveTime() {
   loadData();
 }
 
+function getFastestTime(firstTime, secondTime) {
+  let time1 = getTimeAsSeconds(firstTime);
+  let time2 = getTimeAsSeconds(secondTime);
+  if (time1 < time2) {
+    return time1;
+  } else {
+    return time2;
+  }
+}
+
+function getTimeAsSeconds(time) {
+  if (time?.includes(":")) {
+    return parseFloat(time.split(":")[0]) * 60 + parseFloat(time.split(":")[1]);
+  } else {
+    return time;
+  }
+}
+
 function deleteTime(child, type, distance) {
   localStorage.removeItem(`child1-event-${type}-${distance}`);
   loadData();
