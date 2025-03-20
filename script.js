@@ -72,9 +72,12 @@ export function loadData() {
       if (!swimmerMap[distance][style]) {
         swimmerMap[distance][style] = {};
       }
-      swimmerMap[distance][style].time = result[7];
-      swimmerMap[distance][style].eventName = event.eventName;
-      swimmerMap[distance][style].date = event.date;
+
+      if (!swimmerMap[distance][style].time || result[7] < swimmerMap[distance][style].time) {
+        swimmerMap[distance][style].time = result[7];
+        swimmerMap[distance][style].eventName = event.eventName;
+        swimmerMap[distance][style].date = event.date;
+      }
     }
   }
 
@@ -217,6 +220,24 @@ function saveTime() {
   localStorage.setItem(`child1-event-${type}-${distance}`, timeEntry);
 
   loadData();
+}
+
+function getFastestTime(firstTime, secondTime) {
+  let time1 = getTimeAsSeconds(firstTime);
+  let time2 = getTimeAsSeconds(secondTime);
+  if (time1 < time2) {
+    return time1;
+  } else {
+    return time2;
+  }
+}
+
+function getTimeAsSeconds(time) {
+  if (time?.includes(":")) {
+    return parseFloat(time.split(":")[0]) * 60 + parseFloat(time.split(":")[1]);
+  } else {
+    return time;
+  }
 }
 
 function deleteTime(child, type, distance) {
