@@ -20,29 +20,28 @@ function saveData() {
 }
 
 export function loadData() {
-  console.log("loading");
   document.getElementById("times-table").innerHTML = "";
   document.getElementById("recorded-times-cards").innerHTML = "";
+  document.getElementById("events-entered-cards").innerHTML = "";
   const age = localStorage.getItem("child1-age");
   const name = localStorage.getItem("child1-name");
   const category = localStorage.getItem("child1-category");
   const swimmerNumber = localStorage.getItem("child1-swimmer-number");
   console.log("results", results.events);
   if (!age?.length > 0 || !name?.length > 0 || !category?.length) {
-    document.getElementById("output").innerHTML =
-      "Select a name, age and category to continue";
+    document.getElementById("output").innerHTML = "Select a name, age and category to continue";
     document.getElementById("enter-times-row").style.display = "none";
     return;
   }
 
-  const swimmersEvents = results.events.filter((event) =>
-    event.results.some((result) => result[0] === swimmerNumber)
-  );
+  const swimmersEvents = results.events.filter((event) => event.results.some((result) => result[0] === swimmerNumber));
   console.log("Events entered", swimmersEvents);
 
-  let matchingResults = swimmersEvents.flatMap((event) =>
-    event.results.filter((result) => result[0] === swimmerNumber)
-  );
+  for (const swimmersEvent of swimmersEvents) {
+    document.getElementById("events-entered-cards").innerHTML += `<div class="card">${swimmersEvent.eventName} - ${swimmersEvent.date}</div>`;
+  }
+
+  let matchingResults = swimmersEvents.flatMap((event) => event.results.filter((result) => result[0] === swimmerNumber));
 
   // Adding the same value to each object using map
   matchingResults = matchingResults.map((result) => {
@@ -52,15 +51,10 @@ export function loadData() {
     return result;
   });
 
-  console.log("EVS", matchingResults);
-
   let swimmerMap = {};
 
   for (const event of results.events) {
-    console.log("event", event);
-    const swimmersResults = event.results.filter(
-      (result) => result[0] === swimmerNumber
-    );
+    const swimmersResults = event.results.filter((result) => result[0] === swimmerNumber);
     for (const result of swimmersResults) {
       const distanceNum = result[5].split(" ")[0];
       const distance = result[5].split(" ")[0] + "m";
@@ -73,7 +67,7 @@ export function loadData() {
         swimmerMap[distance][style] = {};
       }
 
-      if (!swimmerMap[distance][style].time || result[7] < swimmerMap[distance][style].time) {
+      if (!swimmerMap[distance][style].time || getTimeAsSeconds(result[7]) < getTimeAsSeconds(swimmerMap[distance][style].time)) {
         swimmerMap[distance][style].time = result[7];
         swimmerMap[distance][style].eventName = event.eventName;
         swimmerMap[distance][style].date = event.date;
@@ -92,13 +86,15 @@ export function loadData() {
 
   const distances = ["50m", "100m", "200m", "400m"];
   const personalTypes = ["Back", "Breast", "Butterfly", "Free", "IM"];
-  const recordedTypes = [
-    "Backstroke",
-    "Breaststroke",
-    "Butterfly",
-    "Freestyle",
-    "Individual Medley",
-  ];
+  const recordedTypes = ["Backstroke", "Breaststroke", "Butterfly", "Freestyle", "Individual Medley"];
+
+  const personalToCountyTypeMap = {
+    Back: "Backstroke",
+    Breast: "Breaststroke",
+    Fly: "Butterfly",
+    Free: "Freestyle",
+    IM: "Individual Medley",
+  };
 
   let rowHtml = "";
 
@@ -112,23 +108,17 @@ export function loadData() {
         rowHtml += `<td>${distance}</td><td>${type}</td><td class="time-cell">${thisTime}</td>`;
 
         if (thisTime.includes(":")) {
-          thisTime =
-            parseFloat(thisTime.split(":")[0]) * 60 +
-            parseFloat(thisTime.split(":")[1]);
+          thisTime = parseFloat(thisTime.split(":")[0]) * 60 + parseFloat(thisTime.split(":")[1]);
         }
         try {
-          let countyTime = countyTimesData[category][distance][type][age];
+          const typeMapped = personalToCountyTypeMap[type];
+          let countyTime = countyTimesData[category][distance][typeMapped][age];
           rowHtml += `<td class="time-cell">${countyTime}</td>`;
           if (countyTime?.includes(":")) {
-            countyTime =
-              parseFloat(countyTime.split(":")[0]) * 60 +
-              parseFloat(countyTime.split(":")[1]);
+            countyTime = parseFloat(countyTime.split(":")[0]) * 60 + parseFloat(countyTime.split(":")[1]);
           }
-          const delta =
-            Number.parseFloat(thisTime) - Number.parseFloat(countyTime);
-          rowHtml += `<td class="time-cell ${
-            isNaN(delta) || delta > 0 ? "negative-delta" : "positive-delta"
-          }">${
+          const delta = Number.parseFloat(thisTime) - Number.parseFloat(countyTime);
+          rowHtml += `<td class="time-cell ${isNaN(delta) || delta > 0 ? "negative-delta" : "positive-delta"}">${
             isNaN(delta) ? "n/a" : delta.toFixed(2)
           }</td><td class="delete-cross" onClick="deleteTime('child1', '${type}', '${distance}')">X</td>`;
         } catch (err) {
@@ -166,16 +156,12 @@ export function loadData() {
         const printableTime = thisTime;
 
         if (thisTime.includes(":")) {
-          thisTime =
-            parseFloat(thisTime.split(":")[0]) * 60 +
-            parseFloat(thisTime.split(":")[1]);
+          thisTime = parseFloat(thisTime.split(":")[0]) * 60 + parseFloat(thisTime.split(":")[1]);
         }
         try {
           let countyTime = countyTimesData[category][distance][type][age];
           if (countyTime?.includes(":")) {
-            countyTime =
-              parseFloat(countyTime.split(":")[0]) * 60 +
-              parseFloat(countyTime.split(":")[1]);
+            countyTime = parseFloat(countyTime.split(":")[0]) * 60 + parseFloat(countyTime.split(":")[1]);
           }
           delta = Number.parseFloat(thisTime) - Number.parseFloat(countyTime);
         } catch (err) {
@@ -186,9 +172,9 @@ export function loadData() {
         cardHtml += "<div class='event-card'>";
         cardHtml += `<div class='event-card-top-row'><div class='event-title'>${distance} ${
           eventTimesTypeMap[type]
-        }</div><div class="time-cell">${printableTime}</div> <div class="time-cell ${
-          delta > 0 ? "negative-delta" : "positive-delta"
-        }">${delta.toFixed(2)}</div></div>`;
+        }</div><div class="time-cell">${printableTime}</div> <div class="time-cell ${delta > 0 ? "negative-delta" : "positive-delta"}">${delta.toFixed(
+          2
+        )}</div></div>`;
         cardHtml += `<div>At: ${swimmerMap[distance][type].eventName} on: ${swimmerMap[distance][type].date}</div>`;
         cardHtml += "</div>";
 
@@ -198,8 +184,7 @@ export function loadData() {
   }
 
   if (Object.keys(swimmerMap).length === 0) {
-    document.getElementById("recorded-times-cards").innerHTML +=
-      "No swims found";
+    document.getElementById("recorded-times-cards").innerHTML += "No swims found";
   }
 
   console.log("number", Object.keys(swimmerMap));
@@ -225,6 +210,14 @@ function saveTime() {
 function getFastestTime(firstTime, secondTime) {
   let time1 = getTimeAsSeconds(firstTime);
   let time2 = getTimeAsSeconds(secondTime);
+  if (!time1?.length > 0) {
+    return time2;
+  }
+
+  if (!time2?.length > 0) {
+    return time1;
+  }
+
   if (time1 < time2) {
     return time1;
   } else {
