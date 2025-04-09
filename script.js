@@ -19,23 +19,56 @@ function saveData() {
   loadData();
 }
 
+export function lookupSwimmer() {
+  // const swimmerNumber = localStorage.getItem("child1-swimmer-number");
+  const swimmerNumber = document.getElementById("swimmerNumber").value;
+
+  console.log("swimmerNumber", swimmerNumber);
+  if (swimmerNumber.length >= 7) {
+    localStorage.setItem("child1-swimmer-number", swimmerNumber);
+    const allResults = getResults();
+    console.log("Got a swim number", swimmerNumber, allResults.events);
+    const swimmersEvents = allResults.events.filter((event) => event.results.some((result) => result[0] === swimmerNumber));
+    console.log("Swimmer details", swimmersEvents)
+    if (swimmersEvents.length > 0) {
+      const swimmerEntry = swimmersEvents[0].results.find(result => result[0] === swimmerNumber);
+      console.log("SwimmerEntry", swimmerEntry);
+      // console.log("Found swimmer", swimmersEvents[0].results[0]);
+      localStorage.setItem("child1-name", swimmerEntry[1]);
+      document.getElementById("name").value = swimmerEntry[1];
+      const today = new Date();
+      const age = today.getFullYear() - 1999 - swimmerEntry[2];
+      localStorage.setItem("child1-age", age);
+      $('#age').val(age);
+      const category = swimmerEntry[3] === "Female" ? "Female" : "Male";
+      localStorage.setItem("child1-category", category);
+      document.getElementById("category").value = category;
+      loadData();
+    }
+    
+  }
+}
+
+
 export function loadData() {
   document.getElementById("times-table").innerHTML = "";
   document.getElementById("recorded-times-cards").innerHTML = "";
   document.getElementById("events-entered-cards").innerHTML = "";
+  const swimmerNumber = localStorage.getItem("child1-swimmer-number");
+  
+  const swimmersEvents = results.events.filter((event) => event.results.some((result) => result[0] === swimmerNumber));
+  console.log("Events entered", swimmersEvents);
+  
   const age = localStorage.getItem("child1-age");
   const name = localStorage.getItem("child1-name");
   const category = localStorage.getItem("child1-category");
-  const swimmerNumber = localStorage.getItem("child1-swimmer-number");
-  console.log("results", results.events);
+  
   if (!age?.length > 0 || !name?.length > 0 || !category?.length) {
     document.getElementById("output").innerHTML = "Select a name, age and category to continue";
     document.getElementById("enter-times-row").style.display = "none";
     return;
   }
 
-  const swimmersEvents = results.events.filter((event) => event.results.some((result) => result[0] === swimmerNumber));
-  console.log("Events entered", swimmersEvents);
 
   for (const swimmersEvent of swimmersEvents) {
     document.getElementById("events-entered-cards").innerHTML += `<div class="card">${swimmersEvent.eventName} - ${swimmersEvent.date}</div>`;
@@ -75,7 +108,6 @@ export function loadData() {
     }
   }
 
-  console.log("swimmerMap", swimmerMap);
 
   document.getElementById("output").innerHTML = "";
   document.getElementById("enter-times-row").style.display = "block";
@@ -91,7 +123,7 @@ export function loadData() {
   const personalToCountyTypeMap = {
     Back: "Backstroke",
     Breast: "Breaststroke",
-    Fly: "Butterfly",
+    Butterfly: "Butterfly",
     Free: "Freestyle",
     IM: "Individual Medley",
   };
@@ -186,8 +218,6 @@ export function loadData() {
   if (Object.keys(swimmerMap).length === 0) {
     document.getElementById("recorded-times-cards").innerHTML += "No swims found";
   }
-
-  console.log("number", Object.keys(swimmerMap));
 }
 
 function saveTime() {
@@ -242,3 +272,4 @@ loadData();
 window.saveTime = saveTime;
 window.deleteTime = deleteTime;
 window.saveData = saveData;
+window.lookupSwimmer = lookupSwimmer;
