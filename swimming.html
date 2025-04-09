@@ -14,8 +14,14 @@
         <div class="card">
           <div class="sub-title">Swimmer details</div>
           <span class="row-split">
-            <label for="swimmerNumber">ASA Number</label><input type="number" id="swimmerNumber" onKeyUp="lookupSwimmer()"/>
-            <label for="name">Name</label><input id="name" type="text" /> 
+            <label for="recordedSwimmers">Recorded swimmers</label>
+            <select id="recordedSwimmers" onChange="changeSwimmer()"></select>
+            <label for="recordedSwimmers">Swimmer details:</label>
+            <div id="swimmerOutput"></div>
+          </span>
+          <span class="row-split">
+            <label for="swimmerNumber">ASA Number</label><input type="number" id="swimmerNumber" onKeyUp="lookupSwimmer()" /> <label for="name">Name</label
+            ><input id="name" type="text" />
             <label for="age">Age</label>
             <select id="age">
               <option id="10">10</option>
@@ -31,8 +37,8 @@
               <option id="Male">Male</option>
               <option id="Female">Female</option>
             </select>
-            
           </span>
+
           <input type="button" value="Save details" onClick="saveData()" />
         </div>
       </div>

@@ -6,8 +6,18 @@ console.log("results", getResults());
 const countyTimesData = getData();
 const results = getResults();
 
+const uniqueSwimmersMap = new Map(results.events.flatMap((event) => event.results.map((result) => [result.slice(0, 4).join("|"), result])));
+
+const uniqueSwimmers = [...uniqueSwimmersMap.values()]
+  .map((result) => ({
+    ID: result[0],
+    name: result[1],
+    yearOfBirth: result[2],
+    category: result[3],
+  }))
+  .sort((a, b) => a.name.localeCompare(b.name));
+
 function saveData() {
-  console.log("Saving");
   const age = document.getElementById("age").value;
   const name = document.getElementById("name").value;
   const category = document.getElementById("category").value;
@@ -19,8 +29,36 @@ function saveData() {
   loadData();
 }
 
+export function changeSwimmer() {
+  const swimmerId = $("#recordedSwimmers").val();
+  const thisSwimmer = uniqueSwimmers.find((s) => s.ID === swimmerId);
+  const category = thisSwimmer.category === "Female" ? "Female" : "Male";
+  const today = new Date();
+  const childAge = today.getFullYear() - 1999 - thisSwimmer.yearOfBirth;
+  writeSwimmerToLocalStorage(childAge, thisSwimmer.name, category, thisSwimmer.ID);
+  showSwimmerDetailsInBoxes();
+
+  loadData();
+}
+
+function writeSwimmerToLocalStorage(age, name, category, id) {
+  localStorage.setItem("child1-age", age);
+  localStorage.setItem("child1-name", name);
+  localStorage.setItem("child1-category", category);
+  localStorage.setItem("child1-swimmer-number", id);
+}
+
+function showSwimmerDetailsInBoxes(age, name, category, id) {
+  document.getElementById("age").value = age;
+  document.getElementById("name").value = name;
+  document.getElementById("swimmerNumber").value = id;
+  document.getElementById("category").value = category;
+
+  $("#swimmerOutput").empty();
+  $("#swimmerOutput").append(`${name} (${id}) is swimming as a ${age} year old in the next counties.`);
+}
+
 export function lookupSwimmer() {
-  // const swimmerNumber = localStorage.getItem("child1-swimmer-number");
   const swimmerNumber = document.getElementById("swimmerNumber").value;
 
   console.log("swimmerNumber", swimmerNumber);
@@ -29,46 +67,54 @@ export function lookupSwimmer() {
     const allResults = getResults();
     console.log("Got a swim number", swimmerNumber, allResults.events);
     const swimmersEvents = allResults.events.filter((event) => event.results.some((result) => result[0] === swimmerNumber));
-    console.log("Swimmer details", swimmersEvents)
+    console.log("Swimmer details", swimmersEvents);
     if (swimmersEvents.length > 0) {
-      const swimmerEntry = swimmersEvents[0].results.find(result => result[0] === swimmerNumber);
+      const swimmerEntry = swimmersEvents[0].results.find((result) => result[0] === swimmerNumber);
       console.log("SwimmerEntry", swimmerEntry);
-      // console.log("Found swimmer", swimmersEvents[0].results[0]);
       localStorage.setItem("child1-name", swimmerEntry[1]);
       document.getElementById("name").value = swimmerEntry[1];
       const today = new Date();
       const age = today.getFullYear() - 1999 - swimmerEntry[2];
       localStorage.setItem("child1-age", age);
-      $('#age').val(age);
+      $("#age").val(age);
       const category = swimmerEntry[3] === "Female" ? "Female" : "Male";
       localStorage.setItem("child1-category", category);
       document.getElementById("category").value = category;
       loadData();
     }
-    
   }
 }
 
-
 export function loadData() {
+  $("#recordedSwimmers").empty();
+  $.each(uniqueSwimmers, function (i, swimmer) {
+    $("#recordedSwimmers").append(
+      $("<option>", {
+        value: swimmer.ID,
+        text: swimmer.name,
+      })
+    );
+  });
+
+  const swimmerNumber = localStorage.getItem("child1-swimmer-number");
+  $("#recordedSwimmers").val(swimmerNumber);
+
   document.getElementById("times-table").innerHTML = "";
   document.getElementById("recorded-times-cards").innerHTML = "";
   document.getElementById("events-entered-cards").innerHTML = "";
-  const swimmerNumber = localStorage.getItem("child1-swimmer-number");
-  
+
   const swimmersEvents = results.events.filter((event) => event.results.some((result) => result[0] === swimmerNumber));
   console.log("Events entered", swimmersEvents);
-  
+
   const age = localStorage.getItem("child1-age");
   const name = localStorage.getItem("child1-name");
   const category = localStorage.getItem("child1-category");
-  
+
   if (!age?.length > 0 || !name?.length > 0 || !category?.length) {
     document.getElementById("output").innerHTML = "Select a name, age and category to continue";
     document.getElementById("enter-times-row").style.display = "none";
     return;
   }
-
 
   for (const swimmersEvent of swimmersEvents) {
     document.getElementById("events-entered-cards").innerHTML += `<div class="card">${swimmersEvent.eventName} - ${swimmersEvent.date}</div>`;
@@ -108,13 +154,9 @@ export function loadData() {
     }
   }
 
-
   document.getElementById("output").innerHTML = "";
   document.getElementById("enter-times-row").style.display = "block";
-  document.getElementById("age").value = age;
-  document.getElementById("name").value = name;
-  document.getElementById("swimmerNumber").value = swimmerNumber;
-  document.getElementById("category").value = category;
+  showSwimmerDetailsInBoxes(age, name, category, swimmerNumber);
 
   const distances = ["50m", "100m", "200m", "400m"];
   const personalTypes = ["Back", "Breast", "Butterfly", "Free", "IM"];
@@ -273,3 +315,4 @@ window.saveTime = saveTime;
 window.deleteTime = deleteTime;
 window.saveData = saveData;
 window.lookupSwimmer = lookupSwimmer;
+window.changeSwimmer = changeSwimmer;
