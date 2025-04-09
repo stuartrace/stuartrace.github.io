@@ -18,6 +18,11 @@ export function getResults() {
           ["1518045", "Frankie Anderson", "15", "Female", "Felixstowe", "50 Butterfly", "F", "44.77", "161"],
           ["1503220", "Ewan Wilcox", "11", "Open/Male", "Felixstowe", "800 Freestyle", "H", "11:55.6", "252"],
           ["1503220", "Ewan Wilcox", "11", "Open/Male", "Felixstowe", "1500 Freestyle", "H", "22:29.5", "268"],
+          ["1732229", "Noah Race", "14", "Open/Male", "Felixstowe", "50 Butterfly", "H", "44.81", "114"],
+          ["1468588", "Leah Rhodes", "13", "Female", "Felixstowe", "50 Freestyle", "H", "35.85", "261"],
+          ["1468588", "Leah Rhodes", "13", "Female", "Felixstowe", "100 Breaststroke", "H", "1:43.11", "221"],
+          ["1468588", "Leah Rhodes", "13", "Female", "Felixstowe", "100 Breaststroke", "F", "1:47.42", "195"],
+          ["1518045", "Frankie Anderson", "15", "Female", "Felixstowe", "100 Individual Medley", "H", "1:40.48", "177"],
         ],
       },
       {
@@ -125,9 +130,9 @@ export function getResults() {
           ["1737305", "Phoebe Gallagher", "15", "Female", "Felixstowe", "50 Backstroke", "F", "57.32", "85"],
           ["1786909", "Sofia Briscan", "12", "Female", "Felixstowe", "50 Backstroke", "F", "1:01.04", "70"],
           ["1807307", "Maria Briscan", "14", "Female", "Felixstowe", "50 Backstroke", "F", "1:03.29", "63"],
-          ["1786899", "Violet Gallagher", "14", "Female", "Felixstowe", "50 Backstroke", "F", "1:07.24", "52"]
-        ]
-      }
+          ["1786899", "Violet Gallagher", "14", "Female", "Felixstowe", "50 Backstroke", "F", "1:07.24", "52"],
+        ],
+      },
     ],
   };
 }
