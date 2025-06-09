@@ -61,13 +61,10 @@ function showSwimmerDetailsInBoxes(age, name, category, id) {
 export function lookupSwimmer() {
   const swimmerNumber = document.getElementById("swimmerNumber").value;
 
-  console.log("swimmerNumber", swimmerNumber);
   if (swimmerNumber.length >= 7) {
     localStorage.setItem("child1-swimmer-number", swimmerNumber);
     const allResults = getResults();
-    console.log("Got a swim number", swimmerNumber, allResults.events);
     const swimmersEvents = allResults.events.filter((event) => event.results.some((result) => result[0] === swimmerNumber));
-    console.log("Swimmer details", swimmersEvents);
     if (swimmersEvents.length > 0) {
       const swimmerEntry = swimmersEvents[0].results.find((result) => result[0] === swimmerNumber);
       console.log("SwimmerEntry", swimmerEntry);
@@ -268,7 +265,7 @@ export function loadData() {
         }
 
         let cardHtml = "";
-        cardHtml += "<div class='event-card'>";
+        cardHtml += `<div class='event-card ${delta < 0 ? "qualified" : ""}'>`;
         cardHtml += `<div class='event-card-top-row'><div class='event-title'>${distance} ${
           eventTimesTypeMap[type]
         }</div><div class="time-cell">${printableTime}</div> <div class="time-cell ${delta > 0 ? "negative-delta" : "positive-delta"}">${delta.toFixed(

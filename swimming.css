@@ -96,12 +96,20 @@ th {
   padding: 10px;
   margin-bottom: 10px;
   background-color: #2d2d2d;
+
+  &.qualified {
+    border: 1px solid #00d800;
+    .time-cell {
+      background-color: green;
+      color: white;
+    }
+  }
 }
 
 .event-card-top-row {
   font-size: 1.25rem;
   display: grid;
-  grid-template-columns: auto 22% 16%;
+  grid-template-columns: auto 22% 18%;
   column-gap: 5px;
   margin-bottom: 5px;
 }
@@ -109,6 +117,7 @@ th {
 tr td.time-cell,
 div.time-cell {
   padding: 3px;
+  border-radius: 3px;
 }
 
 tr td.positive-delta,
@@ -119,7 +128,7 @@ div.positive-delta {
 
 tr td.negative-delta,
 div.negative-delta {
-  background-color: red;
+  background-color: #c90101;
   color: white;
 }
 
