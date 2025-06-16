@@ -38,6 +38,15 @@ export function getData() {
           15: "29.10",
           16: "27.00",
         },
+        "Individual Medley": {
+          10: "",
+          11: "",
+          12: "",
+          13: "",
+          14: "",
+          15: "",
+          16: "",
+        }
       },
       "100m": {
         Backstroke: {
@@ -217,6 +226,15 @@ export function getData() {
           15: "30.50",
           16: "30.30",
         },
+        "Individual Medley": {
+          10: "",
+          11: "",
+          12: "",
+          13: "",
+          14: "",
+          15: "",
+          16: "",
+        }
       },
       "100m": {
         Backstroke: {
