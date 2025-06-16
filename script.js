@@ -181,7 +181,7 @@ export function loadData() {
   showSwimmerDetailsInBoxes(age, name, category, swimmerNumber);
 
   const distances = ["50m", "100m", "200m", "400m"];
-  const personalTypes = ["Back", "Breast", "Butterfly", "Free", "IM"];
+  const personalTypes = ["Back", "Breast", "Butterfly", "Free", "Im"];
   const recordedTypes = ["Backstroke", "Breaststroke", "Butterfly", "Freestyle", "Individual Medley"];
 
   const personalToCountyTypeMap = {
@@ -189,7 +189,7 @@ export function loadData() {
     Breast: "Breaststroke",
     Butterfly: "Butterfly",
     Free: "Freestyle",
-    IM: "Individual Medley",
+    Im: "Individual Medley",
   };
 
   let rowHtml = "";
@@ -202,12 +202,14 @@ export function loadData() {
       if (thisTime !== null) {
         rowHtml = "<tr>";
         rowHtml += `<td>${distance}</td><td>${type}</td><td class="time-cell">${thisTime}</td>`;
+        console.log("Type", type)
 
         if (thisTime.includes(":")) {
           thisTime = parseFloat(thisTime.split(":")[0]) * 60 + parseFloat(thisTime.split(":")[1]);
         }
         try {
           const typeMapped = personalToCountyTypeMap[type];
+          console.log("TypeMapped", countyTimesData[category][distance][typeMapped])
           let countyTime = countyTimesData[category][distance][typeMapped][age];
           rowHtml += `<td class="time-cell">${countyTime}</td>`;
           if (countyTime?.includes(":")) {
@@ -219,7 +221,7 @@ export function loadData() {
           }</td><td class="delete-cross" onClick="deleteTime('child1', '${type}', '${distance}')">X</td>`;
         } catch (err) {
           console.log("err", err);
-          rowHtml += `<td class="time-cell"></td><td class="time-cell"></td><td></td>`;
+          rowHtml += `<td class="time-cell"></td><td class="time-cell"></td><td class="delete-cross" onClick="deleteTime('child1', '${type}', '${distance}')">X</td>`;
         }
         rowHtml += "</tr>";
       }
