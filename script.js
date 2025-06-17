@@ -336,16 +336,15 @@ function saveTime() {
   const distance = document.getElementById("distance").value;
   const timeEntry = document.getElementById("time-entry").value;
 
-  const secondsRegExp = /^[0-5]{1,2}\.[0-9]{1,2}$/g;
-  const minutesRegExp = /^[0-9]{1}:[0-5]{2}\.[0-9]{1,2}$/g;
-  if (!secondsRegExp.test(timeEntry) && !minutesRegExp.test(timeEntry)) {
+  const shortTimeRegExp = /^[0-5]?[0-9]\.[0-9]{2}$/;
+  const minutesRegExp = /^([0-9]|10):[0-5][0-9]\.[0-9]{2}$/;
+
+  if (shortTimeRegExp.test(timeEntry) || minutesRegExp.test(timeEntry)) {
+    localStorage.setItem(`child1-event-${type}-${distance}`, timeEntry);
+    loadData();
+  } else {
     alert("Time entry must use the format 1:23.45 or 12.34");
-    return;
   }
-
-  localStorage.setItem(`child1-event-${type}-${distance}`, timeEntry);
-
-  loadData();
 }
 
 function getTimeAsSeconds(time) {
