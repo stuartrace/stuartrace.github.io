@@ -301,6 +301,7 @@ function renderCountyTargetsCell(category, type, age, distance) {
 }
 
 function renderCountyTargets(recordedTypes, age, category) {
+  document.getElementById("county-targets-table").innerHTML = "";
   for (const type of recordedTypes) {
     let rowHtml = "<tr>";
     rowHtml += "<td>" + type + "</td>";

@@ -81,10 +81,6 @@ table {
   border-radius: 5px;
 }
 
-#times-table tr:nth-child(even) td {
-  background-color: #2d2d2d;
-}
-
 td {
   color: white;
   border: 1px solid #555;
