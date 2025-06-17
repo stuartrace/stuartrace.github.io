@@ -288,26 +288,27 @@ export function loadData() {
   if (Object.keys(swimmerMapL3Plus).length === 0) {
     document.getElementById("recorded-times-cards").innerHTML += "No swims found";
   }
-  
-  renderCountyTargets(recordedTypes, age, category)
+
+  renderCountyTargets(recordedTypes, age, category);
+}
+
+function renderCountyTargetsCell(category, type, age, distance) {
+  if (countyTimesData[category][distance][type][age] === "") {
+    return "<td class='not-applicable-cell'>n/a</td>";
+  } else {
+    return "<td class='center'>" + countyTimesData[category][distance][type][age] + "</td>";
+  }
 }
 
 function renderCountyTargets(recordedTypes, age, category) {
   for (const type of recordedTypes) {
-    console.log("Type", type);
     let rowHtml = "<tr>";
-    rowHtml += "<td>" + type + "</td>"
-    let countyTime50 = countyTimesData[category]["50m"][type][age];
-    rowHtml += "<td>" + countyTime50 + "</td>";
-    console.log("50", countyTime50)
-    let countyTime100 = countyTimesData[category]["100m"][type][age];
-    rowHtml += "<td>" + countyTime100 + "</td>";
-    let countyTime200 = countyTimesData[category]["200m"][type][age];
-    rowHtml += "<td>" + countyTime200 + "</td>";
-    let countyTime400 = countyTimesData[category]["400m"][type][age];
-    rowHtml += "<td>" + countyTime400 + "</td>";
+    rowHtml += "<td>" + type + "</td>";
+    rowHtml += renderCountyTargetsCell(category, type, age, "50m");
+    rowHtml += renderCountyTargetsCell(category, type, age, "100m");
+    rowHtml += renderCountyTargetsCell(category, type, age, "200m");
+    rowHtml += renderCountyTargetsCell(category, type, age, "400m");
     rowHtml += "</tr>";
-    console.log("Row", rowHtml);
     document.getElementById("county-targets-table").innerHTML += rowHtml;
   }
 }

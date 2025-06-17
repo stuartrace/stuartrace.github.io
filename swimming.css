@@ -1,5 +1,6 @@
 :root {
   --highlight-colour: #06329f;
+  --disabled-colour: #535353;
 }
 
 body {
@@ -21,6 +22,16 @@ body {
   padding-right: 10px;
   padding-top: 5px;
   padding-bottom: 5px;
+  text-align: center;
+}
+
+.center {
+  text-align: center;
+}
+
+.not-applicable-cell {
+  background-color: var(--disabled-colour);
+  color: #888;
   text-align: center;
 }
 
@@ -70,7 +81,7 @@ table {
   border-radius: 5px;
 }
 
-tr:nth-child(even) td {
+#times-table tr:nth-child(even) td {
   background-color: #2d2d2d;
 }
 
