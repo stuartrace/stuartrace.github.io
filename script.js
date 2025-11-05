@@ -235,6 +235,8 @@ export function loadData() {
     Butterfly: "Fly",
   };
 
+  const timesAchieved = {};
+
   // Render recorded times
   for (const distance of distances) {
     for (const type of recordedTypes) {
@@ -260,6 +262,12 @@ export function loadData() {
             countyTime = parseFloat(countyTime.split(":")[0]) * 60 + parseFloat(countyTime.split(":")[1]);
           }
           delta = Number.parseFloat(thisTime) - Number.parseFloat(countyTime);
+          if (delta < 0) {
+            if (!timesAchieved[type]) {
+              timesAchieved[type] = {};
+            }
+            timesAchieved[type][distance] = {};
+          }
         } catch (err) {
           console.log("err", err);
         }
@@ -289,26 +297,34 @@ export function loadData() {
     document.getElementById("recorded-times-cards").innerHTML += "No swims found";
   }
 
-  renderCountyTargets(recordedTypes, age, category);
+  renderCountyTargets(recordedTypes, age, category, timesAchieved);
 }
 
-function renderCountyTargetsCell(category, type, age, distance) {
+function renderCountyTargetsCell(category, type, age, distance, achieved) {
   if (countyTimesData[category][distance][type][age] === "") {
     return "<td class='not-applicable-cell'>n/a</td>";
   } else {
-    return "<td class='center'>" + countyTimesData[category][distance][type][age] + "</td>";
+    return `<td class='center ${achieved ? "positive-delta" : "negative-delta"}'>${countyTimesData[category][distance][type][age]}</td>`;
   }
 }
 
-function renderCountyTargets(recordedTypes, age, category) {
+/**
+ * Renders a table of county targets for a given set of recorded types, age, and category.
+ * Updates the inner HTML of the element with ID "county-targets-table".
+ *
+ * @param {string[]} recordedTypes - An array of stroke types (e.g., "Freestyle", "Backstroke").
+ * @param {string} age - The age of the swimmer, used to determine target times.
+ * @param {string} category - The category of the swimmer (e.g., "Open/Male", "Female").
+ */
+function renderCountyTargets(recordedTypes, age, category, timesAchieved) {
   document.getElementById("county-targets-table").innerHTML = "";
   for (const type of recordedTypes) {
     let rowHtml = "<tr>";
     rowHtml += "<td>" + type + "</td>";
-    rowHtml += renderCountyTargetsCell(category, type, age, "50m");
-    rowHtml += renderCountyTargetsCell(category, type, age, "100m");
-    rowHtml += renderCountyTargetsCell(category, type, age, "200m");
-    rowHtml += renderCountyTargetsCell(category, type, age, "400m");
+    rowHtml += renderCountyTargetsCell(category, type, age, "50m", timesAchieved[type] && timesAchieved[type]["50m"]);
+    rowHtml += renderCountyTargetsCell(category, type, age, "100m", timesAchieved[type] && timesAchieved[type]["100m"]);
+    rowHtml += renderCountyTargetsCell(category, type, age, "200m", timesAchieved[type] && timesAchieved[type]["200m"]);
+    rowHtml += renderCountyTargetsCell(category, type, age, "400m", timesAchieved[type] && timesAchieved[type]["400m"]);
     rowHtml += "</tr>";
     document.getElementById("county-targets-table").innerHTML += rowHtml;
   }
