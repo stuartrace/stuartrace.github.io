@@ -20,7 +20,7 @@
             <label for="recordedSwimmers">Swimmer details:</label>
             <div id="swimmerOutput"></div>
           </span>
-          <span class="row-split">
+          <!-- <span class="row-split">
             <label for="swimmerNumber">ASA Number</label><input type="number" id="swimmerNumber" onKeyUp="lookupSwimmer()" /> <label for="name">Name</label
             ><input id="name" type="text" />
             <label for="age">Age</label>
@@ -38,9 +38,9 @@
               <option id="Male">Male</option>
               <option id="Female">Female</option>
             </select>
-          </span>
+          </span> -->
 
-          <input type="button" value="Save details" onClick="saveData()" />
+          <!-- <input type="button" value="Save details" onClick="saveData()" /> -->
         </div>
       </div>
       <div id="output"></div>
@@ -65,6 +65,20 @@
             </tr>
           </thead>
           <tbody id="county-targets-table"></tbody>
+        </table>
+        <br />
+        <div class="sub-title">Regional targets for 2026</div>
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>50m</th>
+              <th>100m</th>
+              <th>200m</th>
+              <th>400m</th>
+            </tr>
+          </thead>
+          <tbody id="regional-targets-table"></tbody>
         </table>
         <br />
         <div class="sub-title">2025 Personal Bests (L3)</div>

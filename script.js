@@ -1,7 +1,9 @@
 import { getData } from "./swimming-county-times.js";
+import { getRegionalTimes } from "./swimming-regional-times.js";
 import { getResults } from "./swimming-results.js";
 
 const countyTimesData = getData();
+const regionalTimesData = getRegionalTimes();
 const results = getResults();
 
 const uniqueSwimmersMap = new Map(results.events.flatMap((event) => event.results.map((result) => [result.slice(0, 4).join("|"), result])));
@@ -47,10 +49,10 @@ function writeSwimmerToLocalStorage(age, name, category, id) {
 }
 
 function showSwimmerDetailsInBoxes(age, name, category, id) {
-  document.getElementById("age").value = age;
-  document.getElementById("name").value = name;
-  document.getElementById("swimmerNumber").value = id;
-  document.getElementById("category").value = category;
+  // document.getElementById("age").value = age;
+  // document.getElementById("name").value = name;
+  // document.getElementById("swimmerNumber").value = id;
+  // document.getElementById("category").value = category;
 
   $("#swimmerOutput").empty();
   $("#swimmerOutput").append(`${name} (${id}) is swimming as a ${age} year old in the next counties.`);
@@ -232,14 +234,15 @@ export function loadData() {
     Butterfly: "Fly",
   };
 
-  const timesAchieved = {};
+  const countyTimesAchieved = {};
+  const regionalTimesAchieved = {};
 
   // Render recorded times
   for (const distance of distances) {
     for (const type of recordedTypes) {
       rowHtml = "";
       let thisTime = null;
-      let delta;
+      let countyDelta;
 
       try {
         thisTime = swimmerMapL3Plus[distance][type].time;
@@ -258,24 +261,40 @@ export function loadData() {
           if (countyTime?.includes(":")) {
             countyTime = parseFloat(countyTime.split(":")[0]) * 60 + parseFloat(countyTime.split(":")[1]);
           }
-          delta = Number.parseFloat(thisTime) - Number.parseFloat(countyTime);
-          if (delta < 0) {
-            if (!timesAchieved[type]) {
-              timesAchieved[type] = {};
+          countyDelta = Number.parseFloat(thisTime) - Number.parseFloat(countyTime);
+          if (countyDelta < 0) {
+            if (!countyTimesAchieved[type]) {
+              countyTimesAchieved[type] = {};
             }
-            timesAchieved[type][distance] = {};
+            countyTimesAchieved[type][distance] = {};
+          }
+        } catch (err) {
+          console.log("err", err);
+        }
+
+        try {
+          let regionalTime = regionalTimesData[category][distance][type][age];
+          if (regionalTime?.includes(":")) {
+            regionalTime = parseFloat(regionalTime.split(":")[0]) * 60 + parseFloat(regionalTime.split(":")[1]);
+          }
+          regionalDelta = Number.parseFloat(thisTime) - Number.parseFloat(regionalTime);
+          if (regionalDelta < 0) {
+            if (!regionalTimesAchieved[type]) {
+              regionalTimesAchieved[type] = {};
+            }
+            regionalTimesAchieved[type][distance] = {};
           }
         } catch (err) {
           console.log("err", err);
         }
 
         let cardHtml = "";
-        cardHtml += `<div class='event-card ${delta < 0 ? "qualified" : ""}'>`;
+        cardHtml += `<div class='event-card ${countyDelta < 0 ? "qualified" : ""}'>`;
         cardHtml += `<div class='event-card-top-row'><div class='event-title'>${distance} ${
           eventTimesTypeMap[type]
-        }</div><div class="time-cell">${printableTime}</div> <div class="time-cell ${delta > 0 ? "negative-delta" : "positive-delta"}">${delta.toFixed(
-          2
-        )}</div></div>`;
+        }</div><div class="time-cell">${printableTime}</div> <div class="time-cell ${
+          countyDelta > 0 ? "negative-delta" : "positive-delta"
+        }">${countyDelta.toFixed(2)}</div></div>`;
         cardHtml += `<div>At: ${swimmerMapL3Plus[distance][type].eventName} on: ${swimmerMapL3Plus[distance][type].date}</div>`;
         cardHtml += "</div>";
 
@@ -294,7 +313,8 @@ export function loadData() {
     document.getElementById("recorded-times-cards").innerHTML += "No swims found";
   }
 
-  renderCountyTargets(recordedTypes, age, category, timesAchieved);
+  renderCountyTargets(recordedTypes, age, category, countyTimesAchieved);
+  renderRegionalTargets(recordedTypes, age, category, regionalTimesAchieved);
 }
 
 function renderCountyTargetsCell(category, type, age, distance, achieved) {
@@ -324,6 +344,43 @@ function renderCountyTargets(recordedTypes, age, category, timesAchieved) {
     rowHtml += renderCountyTargetsCell(category, type, age, "400m", timesAchieved[type] && timesAchieved[type]["400m"]);
     rowHtml += "</tr>";
     document.getElementById("county-targets-table").innerHTML += rowHtml;
+  }
+}
+
+function renderRegionalTargetsCell(category, type, age, distance, achieved) {
+  console.log("reg", regionalTimesData);
+  if (
+    !regionalTimesData ||
+    !regionalTimesData[category] ||
+    !regionalTimesData[category][distance] ||
+    !regionalTimesData[category][distance][type] ||
+    regionalTimesData[category][distance][type][age] === ""
+  ) {
+    return "<td class='not-applicable-cell'>n/a</td>";
+  } else {
+    return `<td class='center ${achieved ? "positive-delta" : "negative-delta"}'>${regionalTimesData[category][distance][type][age]}</td>`;
+  }
+}
+
+/**
+ * Renders a table of county targets for a given set of recorded types, age, and category.
+ * Updates the inner HTML of the element with ID "county-targets-table".
+ *
+ * @param {string[]} recordedTypes - An array of stroke types (e.g., "Freestyle", "Backstroke").
+ * @param {string} age - The age of the swimmer, used to determine target times.
+ * @param {string} category - The category of the swimmer (e.g., "Open/Male", "Female").
+ */
+function renderRegionalTargets(recordedTypes, age, category, timesAchieved) {
+  document.getElementById("regional-targets-table").innerHTML = "";
+  for (const type of recordedTypes) {
+    let rowHtml = "<tr>";
+    rowHtml += "<td>" + type + "</td>";
+    rowHtml += renderRegionalTargetsCell(category, type, age, "50m", timesAchieved[type] && timesAchieved[type]["50m"]);
+    rowHtml += renderRegionalTargetsCell(category, type, age, "100m", timesAchieved[type] && timesAchieved[type]["100m"]);
+    rowHtml += renderRegionalTargetsCell(category, type, age, "200m", timesAchieved[type] && timesAchieved[type]["200m"]);
+    rowHtml += renderRegionalTargetsCell(category, type, age, "400m", timesAchieved[type] && timesAchieved[type]["400m"]);
+    rowHtml += "</tr>";
+    document.getElementById("regional-targets-table").innerHTML += rowHtml;
   }
 }
 
