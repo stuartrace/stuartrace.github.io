@@ -1,7 +1,5 @@
 import { getData } from "./swimming-county-times.js";
 import { getResults } from "./swimming-results.js";
-console.log("times", getData());
-console.log("results", getResults());
 
 const countyTimesData = getData();
 const results = getResults();
@@ -67,7 +65,6 @@ export function lookupSwimmer() {
     const swimmersEvents = allResults.events.filter((event) => event.results.some((result) => result[0] === swimmerNumber));
     if (swimmersEvents.length > 0) {
       const swimmerEntry = swimmersEvents[0].results.find((result) => result[0] === swimmerNumber);
-      console.log("SwimmerEntry", swimmerEntry);
       localStorage.setItem("child1-name", swimmerEntry[1]);
       document.getElementById("name").value = swimmerEntry[1];
       const today = new Date();
@@ -115,7 +112,7 @@ export function loadData() {
   }
 
   for (const swimmersEvent of swimmersEvents) {
-    document.getElementById("events-entered-cards").innerHTML += `<div class="card">${swimmersEvent.eventName} - ${swimmersEvent.date}</div>`;
+    document.getElementById("events-entered-cards").innerHTML += `<div class="event-card">${swimmersEvent.eventName} - ${swimmersEvent.date}</div>`;
   }
 
   let matchingResults = swimmersEvents.flatMap((event) => event.results.filter((result) => result[0] === swimmerNumber));
