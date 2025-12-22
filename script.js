@@ -348,7 +348,6 @@ function renderCountyTargets(recordedTypes, age, category, timesAchieved) {
 }
 
 function renderRegionalTargetsCell(category, type, age, distance, achieved) {
-  console.log("reg", regionalTimesData);
   if (
     !regionalTimesData ||
     !regionalTimesData[category] ||
