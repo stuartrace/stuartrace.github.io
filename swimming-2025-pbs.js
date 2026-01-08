@@ -1,4 +1,4 @@
-export function getResults() {
+export function get2025Results() {
   return [
     ["1281250", "Owen Young", "7", "Open/Male", "Felixstowe", "100 Breaststroke", "F", "01:20.9", "319"],
     ["1281250", "Owen Young", "7", "Open/Male", "Felixstowe", "100 Freestyle", "F", "01:04.3", "338"],

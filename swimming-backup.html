@@ -53,12 +53,7 @@
               <option id="400">400m</option>
             </select>
             <label for="time-entry">Time</label>
-            <input
-              type="text"
-              id="time-entry"
-              size="8"
-              placeholder="e.g. 54.21 or 1:23.45"
-            />
+            <input type="text" id="time-entry" size="8" placeholder="e.g. 54.21 or 1:23.45" />
           </span>
           <input type="button" value="Save time" onClick="saveTime()" />
         </div>
@@ -79,9 +74,7 @@
       </table>
 
       <div class="note">
-        Please note, only 50m and 100m Suffolk county times have been entered so
-        far. All personal bests are stored in your browser on the device you're
-        using.
+        Please note, only 50m and 100m Suffolk county times have been entered so far. All personal bests are stored in your browser on the device you're using.
       </div>
     </div>
 
@@ -413,8 +406,7 @@
         const name = localStorage.getItem("child1-name");
         const category = localStorage.getItem("child1-category");
         if (!age?.length > 0 || !name?.length > 0 || !category?.length) {
-          document.getElementById("output").innerHTML =
-            "Select a name, age and category to continue";
+          document.getElementById("output").innerHTML = "Select a name, age and category to continue";
           document.getElementById("enter-times-row").style.display = "none";
           return;
         }
@@ -433,33 +425,22 @@
         for (const distance of distances) {
           for (const type of types) {
             rowHtml = "";
-            let thisTime = localStorage.getItem(
-              `child1-event-${type}-${distance}`
-            );
+            let thisTime = localStorage.getItem(`child1-event-${type}-${distance}`);
             if (thisTime !== null) {
               rowHtml = "<tr>";
               rowHtml += `<td>${distance}</td><td>${type}</td><td class="time-cell">${thisTime}</td>`;
 
               if (thisTime.includes(":")) {
-                thisTime =
-                  parseFloat(thisTime.split(":")[0]) * 60 +
-                  parseFloat(thisTime.split(":")[1]);
+                thisTime = parseFloat(thisTime.split(":")[0]) * 60 + parseFloat(thisTime.split(":")[1]);
               }
               try {
                 let countyTime = times[category][distance][type][age];
                 rowHtml += `<td class="time-cell">${countyTime}</td>`;
                 if (countyTime?.includes(":")) {
-                  countyTime =
-                    parseFloat(countyTime.split(":")[0]) * 60 +
-                    parseFloat(countyTime.split(":")[1]);
+                  countyTime = parseFloat(countyTime.split(":")[0]) * 60 + parseFloat(countyTime.split(":")[1]);
                 }
-                const delta =
-                  Number.parseFloat(thisTime) - Number.parseFloat(countyTime);
-                rowHtml += `<td class="time-cell ${
-                  isNaN(delta) || delta > 0
-                    ? "negative-delta"
-                    : "positive-delta"
-                }">${
+                const delta = Number.parseFloat(thisTime) - Number.parseFloat(countyTime);
+                rowHtml += `<td class="time-cell ${isNaN(delta) || delta > 0 ? "negative-delta" : "positive-delta"}">${
                   isNaN(delta) ? "n/a" : delta.toFixed(2)
                 }</td><td class="delete-cross" onClick="deleteTime('child1', '${type}', '${distance}')">X</td>`;
               } catch (err) {

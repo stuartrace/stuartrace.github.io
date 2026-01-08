@@ -1,6 +1,7 @@
 import { getData } from "./swimming-county-times.js";
 import { getRegionalTimes } from "./swimming-regional-times.js";
 import { getResults } from "./swimming-results.js";
+import { get2025Results } from "./swimming-2025-pbs.js";
 
 const countyTimesData = getData();
 const regionalTimesData = getRegionalTimes();
@@ -191,6 +192,37 @@ export function loadData() {
     IM: "Individual Medley",
   };
 
+  let allDataMap = {
+    "50m": {
+      Backstroke: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
+      Breaststroke: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
+      Butterfly: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
+      Freestyle: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
+      "Individual Medley": { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
+    },
+    "100m": {
+      Backstroke: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
+      Breaststroke: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
+      Butterfly: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
+      Freestyle: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
+      "Individual Medley": { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
+    },
+    "200m": {
+      Backstroke: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
+      Breaststroke: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
+      Butterfly: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
+      Freestyle: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
+      "Individual Medley": { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
+    },
+    "400m": {
+      Backstroke: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
+      Breaststroke: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
+      Butterfly: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
+      Freestyle: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
+      "Individual Medley": { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
+    },
+  };
+
   let rowHtml = "";
 
   // Render personal bests
@@ -243,6 +275,7 @@ export function loadData() {
       rowHtml = "";
       let thisTime = null;
       let countyDelta;
+      let regionalDelta;
 
       try {
         thisTime = swimmerMapL3Plus[distance][type].time;
@@ -252,6 +285,8 @@ export function loadData() {
 
       if (thisTime !== null) {
         const printableTime = thisTime;
+        console.log("Here", distance, type, allDataMap[distance][type]);
+        allDataMap[distance][type].thisYear = printableTime;
 
         if (thisTime.includes(":")) {
           thisTime = parseFloat(thisTime.split(":")[0]) * 60 + parseFloat(thisTime.split(":")[1]);
@@ -268,6 +303,7 @@ export function loadData() {
             }
             countyTimesAchieved[type][distance] = {};
           }
+          allDataMap[distance][type].countyDelta = countyDelta.toFixed(2);
         } catch (err) {
           console.log("err", err);
         }
@@ -284,6 +320,7 @@ export function loadData() {
             }
             regionalTimesAchieved[type][distance] = {};
           }
+          allDataMap[distance][type].regionalDelta = regionalDelta.toFixed(2);
         } catch (err) {
           console.log("err", err);
         }
@@ -313,8 +350,71 @@ export function loadData() {
     document.getElementById("recorded-times-cards").innerHTML += "No swims found";
   }
 
+  allDataMap = render2026PBs(swimmerNumber, allDataMap);
   renderCountyTargets(recordedTypes, age, category, countyTimesAchieved);
   renderRegionalTargets(recordedTypes, age, category, regionalTimesAchieved);
+  renderAllData(allDataMap);
+}
+
+function render2026PBs(swimmerNumber, allDataMap) {
+  const pbs = get2025Results();
+
+  const timesAchieved = pbs.filter((s) => s[0] === swimmerNumber);
+
+  for (const time of timesAchieved) {
+    // const distance = time[5].split(" ")[0];
+    // const type = time[5].split(" ")[1];
+
+    const parts = time[5].split(" "); // e.g., ["200", "Individual", "medley"]
+    const distance = parts[0]; // "200"
+    const type = parts.slice(1).join(" "); // "Individual medley"
+
+    allDataMap[distance + "m"][type].lastYear = time[7];
+  }
+
+  return allDataMap;
+}
+
+function renderAllData(allDataMap) {
+  document.getElementById("all-data-table").innerHTML = "";
+
+  // Optional: control display order of strokes
+  const strokeOrder = ["Backstroke", "Breaststroke", "Butterfly", "Freestyle", "IM"];
+
+  // Optional: control display order of distances
+  const distanceOrder = ["50m", "100m", "200m", "400m"];
+
+  const rowsHtml = distanceOrder
+    .flatMap((distance) => {
+      const strokesObj = allDataMap[distance] || {};
+      return strokeOrder.map((stroke) => {
+        const entry = strokesObj[stroke] || {
+          lastYear: "",
+          thisYear: "",
+          countyDelta: "",
+          regionalDelta: "",
+        };
+
+        const eventLabel = `${distance} ${stroke}`;
+
+        return `
+          <tr class="${entry.thisYear.length === 0 && entry.lastYear.length === 0 ? "not-applicable-row" : ""}">
+            <td>${eventLabel}</td>
+            <td class="time-cell">${entry.lastYear ?? ""}</td>
+            <td class="time-cell">${entry.thisYear ?? ""}</td>
+            <td class="time-cell ${
+              entry.countyDelta.length === 0 || isNaN(entry.countyDelta) || entry.countyDelta > 0 ? "negative-delta" : "positive-delta"
+            }">${entry.countyDelta ?? ""}</td>
+            <td class="time-cell ${
+              entry.regionalDelta.length === 0 || isNaN(entry.regionalDelta) || entry.regionalDelta > 0 ? "negative-delta" : "positive-delta"
+            }">${entry.regionalDelta ?? ""}</td>
+          </tr>
+        `;
+      });
+    })
+    .join("");
+
+  document.getElementById("all-data-table").innerHTML = rowsHtml;
 }
 
 function renderCountyTargetsCell(category, type, age, distance, achieved) {

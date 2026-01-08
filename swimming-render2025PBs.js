@@ -1,4 +1,4 @@
-import { getResults } from "./swimming-2025-pbs.js";
+import { get2025Results } from "./swimming-2025-pbs.js";
 
 function renderPBCell(achieved) {
   if (achieved.length === 0) {
@@ -38,7 +38,7 @@ function renderPersonalBests(timesAchieved) {
 
 const swimmerNumber = localStorage.getItem("child1-swimmer-number");
 
-const pbs = getResults();
+const pbs = get2025Results();
 
 const timesAchieved = pbs.filter((s) => s[0] === swimmerNumber);
 
