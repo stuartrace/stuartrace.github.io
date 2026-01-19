@@ -122,6 +122,14 @@ th {
   }
 }
 
+#all-data-holder {
+  width: 100%;
+}
+
+.event-title-cell {
+  background-color: var(--background-colour);
+}
+
 .event-card-top-row {
   font-size: 1.25rem;
   display: grid;

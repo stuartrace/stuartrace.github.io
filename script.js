@@ -135,7 +135,6 @@ export function loadData() {
   document.getElementById("events-entered-cards").innerHTML = "";
 
   const swimmersEvents = results.events.filter((event) => event.results.some((result) => result[0] === swimmerNumber));
-  console.log("Events entered", swimmersEvents);
 
   const age = localStorage.getItem("child1-age");
   const name = localStorage.getItem("child1-name");
@@ -181,6 +180,7 @@ export function loadData() {
         swimmerMapL3Plus[distance][style].time = result[7];
         swimmerMapL3Plus[distance][style].eventName = event.eventName;
         swimmerMapL3Plus[distance][style].date = event.date;
+        swimmerMapL3Plus[distance][style].points = result[8];
       }
     }
   }
@@ -318,8 +318,8 @@ export function loadData() {
 
       if (thisTime !== null) {
         const printableTime = thisTime;
-        console.log("Here", distance, type, allDataMap[distance][type]);
         allDataMap[distance][type].thisYear = printableTime;
+        allDataMap[distance][type].points = swimmerMapL3Plus[distance][type].points;
 
         if (thisTime.includes(":")) {
           thisTime = parseFloat(thisTime.split(":")[0]) * 60 + parseFloat(thisTime.split(":")[1]);
@@ -342,7 +342,6 @@ export function loadData() {
         }
 
         try {
-          console.log("Getting", category, distance, type, age);
           let regionalTime = regionalTimesData[category][distance][type][age];
           if (regionalTime?.includes(":")) {
             regionalTime = parseFloat(regionalTime.split(":")[0]) * 60 + parseFloat(regionalTime.split(":")[1]);
@@ -384,6 +383,8 @@ export function loadData() {
     document.getElementById("recorded-times-cards").innerHTML += "No swims found";
   }
 
+  console.log("2025", swimmerMapL3Plus);
+
   allDataMap = render2026PBs(swimmerNumber, allDataMap);
   renderCountyTargets(recordedTypes, age, category, countyTimesAchieved);
   renderRegionalTargets(recordedTypes, age, category, regionalTimesAchieved);
@@ -402,8 +403,10 @@ function render2026PBs(swimmerNumber, allDataMap) {
     const parts = time[5].split(" "); // e.g., ["200", "Individual", "medley"]
     const distance = parts[0]; // "200"
     const type = parts.slice(1).join(" "); // "Individual medley"
+    const points = time[8];
 
     allDataMap[distance + "m"][type].lastYear = time[7];
+    allDataMap[distance + "m"][type].points = "";
   }
 
   return allDataMap;
@@ -418,6 +421,8 @@ function renderAllData(allDataMap) {
   // Optional: control display order of distances
   const distanceOrder = ["50m", "100m", "200m", "400m"];
 
+  let totalPoints = 0;
+
   const rowsHtml = distanceOrder
     .flatMap((distance) => {
       const strokesObj = allDataMap[distance] || {};
@@ -427,21 +432,30 @@ function renderAllData(allDataMap) {
           thisYear: "",
           countyDelta: "",
           regionalDelta: "",
+          points: "",
         };
 
         const eventLabel = `${distance} ${stroke}`;
 
+        if (entry.thisYear.length === 0 && entry.lastYear.length === 0) {
+          return "";
+        }
+
         return `
+          <tr><td colspan="4" class="event-title-cell">${eventLabel} ${entry.lastYear ? "(" + entry.lastYear + ")" : ""}</td></tr>
           <tr class="${entry.thisYear.length === 0 && entry.lastYear.length === 0 ? "not-applicable-row" : ""}">
-            <td>${eventLabel}</td>
-            <td class="time-cell">${entry.lastYear ?? ""}</td>
-            <td class="time-cell">${entry.thisYear ?? ""}</td>
-            <td class="time-cell ${
-              entry.countyDelta.length === 0 || isNaN(entry.countyDelta) || entry.countyDelta > 0 ? "negative-delta" : "positive-delta"
-            }">${entry.countyDelta ?? ""}</td>
-            <td class="time-cell ${
-              entry.regionalDelta.length === 0 || isNaN(entry.regionalDelta) || entry.regionalDelta > 0 ? "negative-delta" : "positive-delta"
-            }">${entry.regionalDelta ?? ""}</td>
+            <td class="time-cell ${entry.thisYear.length === 0 ? "not-applicable-cell" : ""}">${entry.thisYear ?? ""}</td>
+            <td class="time-cell 
+            ${entry.countyDelta.length === 0 || isNaN(entry.countyDelta) ? "not-applicable-cell" : ""}
+            ${entry.countyDelta > 0 ? "negative-delta" : ""}
+            ${entry.countyDelta < 0 ? "positive-delta" : ""}
+            ">${entry.countyDelta ?? ""}</td>
+            <td class="time-cell
+            ${entry.regionalDelta.length === 0 || isNaN(entry.regionalDelta) ? "not-applicable-cell" : ""}
+            ${entry.regionalDelta > 0 ? "negative-delta" : ""}
+            ${entry.regionalDelta < 0 ? "positive-delta" : ""}
+            ">${entry.regionalDelta ?? ""}</td>
+            <td> ${entry.points}</td>
           </tr>
         `;
       });
