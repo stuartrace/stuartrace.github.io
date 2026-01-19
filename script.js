@@ -1,15 +1,48 @@
 import { getData } from "./swimming-county-times.js";
 import { getRegionalTimes } from "./swimming-regional-times.js";
-import { getResults } from "./swimming-results.js";
+import { getResults } from "./swimming-results-2026.js";
 import { get2025Results } from "./swimming-2025-pbs.js";
 
 const countyTimesData = getData();
 const regionalTimesData = getRegionalTimes();
 const results = getResults();
 
+const swimmersSeedMap = new Map([
+  ["1732229|Noah Race|14|Open/Male", ["1732229", "Noah Race", "14", "Open/Male"]],
+  ["1468588|Leah Rhodes|13|Female", ["1468588", "Leah Rhodes", "13", "Female"]],
+  ["1518045|Frankie Anderson|15|Female", ["1518045", "Frankie Anderson", "15", "Female"]],
+  ["1503220|Ewan Wilcox|11|Open/Male", ["1503220", "Ewan Wilcox", "11", "Open/Male"]],
+  ["1662020|Nathanel Ilie|11|Open/Male", ["1662020", "Nathanel Ilie", "11", "Open/Male"]],
+  ["1680628|Toby Thomas|11|Open/Male", ["1680628", "Toby Thomas", "11", "Open/Male"]],
+  ["1707520|Yannick Crowther|12|Open/Male", ["1707520", "Yannick Crowther", "12", "Open/Male"]],
+  ["1796777|Remus Chinery|12|Open/Male", ["1796777", "Remus Chinery", "12", "Open/Male"]],
+  ["1647375|Hannah Smith|10|Female", ["1647375", "Hannah Smith", "10", "Female"]],
+  ["1761783|Mya Smith|13|Female", ["1761783", "Mya Smith", "13", "Female"]],
+  ["1680629|Harriet Thomas|13|Female", ["1680629", "Harriet Thomas", "13", "Female"]],
+  ["1742684|Ivy-Rose Clark|13|Female", ["1742684", "Ivy-Rose Clark", "13", "Female"]],
+  ["1737305|Phoebe Gallagher|15|Female", ["1737305", "Phoebe Gallagher", "15", "Female"]],
+  ["1576896|Emma Lindsey|15|Female", ["1576896", "Emma Lindsey", "15", "Female"]],
+  ["1732278|Bernardo Silva|12|Open/Male", ["1732278", "Bernardo Silva", "12", "Open/Male"]],
+  ["1613655|Paige Westlake|15|Female", ["1613655", "Paige Westlake", "15", "Female"]],
+  ["1786909|Sofia Briscan|12|Female", ["1786909", "Sofia Briscan", "12", "Female"]],
+  ["1786899|Violet Gallagher|14|Female", ["1786899", "Violet Gallagher", "14", "Female"]],
+  ["1807307|Maria Briscan|14|Female", ["1807307", "Maria Briscan", "14", "Female"]],
+  ["1766536|Erica Barabas|13|Female", ["1766536", "Erica Barabas", "13", "Female"]],
+  ["1803614|Fareed Omotosho|11|Open/Male", ["1803614", "Fareed Omotosho", "11", "Open/Male"]],
+  ["1589228|Brandon Newton|9|Open/Male", ["1589228", "Brandon Newton", "9", "Open/Male"]],
+  ["1813869|Aliona Rebello|12|Female", ["1813869", "Aliona Rebello", "12", "Female"]],
+  ["1281250|Owen Young|7|Open/Male", ["1281250", "Owen Young", "7", "Open/Male"]],
+  ["1625109|Eva Wilcox|14|Female", ["1625109", "Eva Wilcox", "14", "Female"]],
+  ["1822118|Samad Omotosho|15|Open/Male", ["1822118", "Samad Omotosho", "15", "Open/Male"]],
+  ["1822121|Ella Thorndyke|14|Female", ["1822121", "Ella Thorndyke", "14", "Female"]],
+  ["1813873|Jessica Smith|15|Female", ["1813873", "Jessica Smith", "15", "Female"]],
+  ["1816617|Emmy Morley|15|Female", ["1816617", "Emmy Morley", "15", "Female"]],
+  ["1836038|George Tymoshenko|14|Open/Male", ["1836038", "George Tymoshenko", "14", "Open/Male"]],
+]);
+
 const uniqueSwimmersMap = new Map(results.events.flatMap((event) => event.results.map((result) => [result.slice(0, 4).join("|"), result])));
 
-const uniqueSwimmers = [...uniqueSwimmersMap.values()]
+const uniqueSwimmers = [...swimmersSeedMap.values(), ...uniqueSwimmersMap.values()]
   .map((result) => ({
     ID: result[0],
     name: result[1],
@@ -89,7 +122,7 @@ export function loadData() {
       $("<option>", {
         value: swimmer.ID,
         text: swimmer.name,
-      })
+      }),
     );
   });
 
@@ -309,6 +342,7 @@ export function loadData() {
         }
 
         try {
+          console.log("Getting", category, distance, type, age);
           let regionalTime = regionalTimesData[category][distance][type][age];
           if (regionalTime?.includes(":")) {
             regionalTime = parseFloat(regionalTime.split(":")[0]) * 60 + parseFloat(regionalTime.split(":")[1]);
@@ -379,7 +413,7 @@ function renderAllData(allDataMap) {
   document.getElementById("all-data-table").innerHTML = "";
 
   // Optional: control display order of strokes
-  const strokeOrder = ["Backstroke", "Breaststroke", "Butterfly", "Freestyle", "IM"];
+  const strokeOrder = ["Backstroke", "Breaststroke", "Butterfly", "Freestyle", "Individual Medley"];
 
   // Optional: control display order of distances
   const distanceOrder = ["50m", "100m", "200m", "400m"];

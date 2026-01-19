@@ -243,6 +243,15 @@ export function getRegionalTimes() {
           16: "1:15.00",
           17: "1:12.50",
         },
+        "Individual Medley": {
+          11: "",
+          12: "",
+          13: "",
+          14: "",
+          15: "",
+          16: "",
+          17: "",
+        },
       },
       "200m": {
         Freestyle: {
