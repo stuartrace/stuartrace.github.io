@@ -1,10 +1,10 @@
 :root {
-  --highlight-colour: #06329f;
+  --highlight-colour: #03a9f4;
   --disabled-colour: #535353;
   --background-colour: #fff;
   --background-shaded-colour: #ddd;
   --text-colour: #000;
-  --light-blue: #66c0fc;
+  /* --waves-blue: #06329f; */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -129,11 +129,15 @@ th {
   .not-applicable-cell {
     min-height: 2rem;
   }
-}
 
-.event-title-cell {
-  background-color: #66c0fc;
-  color: black;
+  & .event-title-cell {
+    background-color: white;
+    color: var(--highlight-colour);
+    padding: 5px;
+
+    display: grid;
+    grid-template-columns: 1fr auto;
+  }
 }
 
 .event-card-top-row {
@@ -143,8 +147,7 @@ th {
   margin-bottom: 5px;
 
   & .event-title {
-    color: black;
-    background-color: var(--light-blue);
+    background-color: var(--highlight-colour);
     border-radius: 5px;
     padding-top: 3px;
     padding-left: 5px;

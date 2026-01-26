@@ -444,7 +444,7 @@ function renderAllData(allDataMap) {
         }
 
         return `
-          <tr><td colspan="4" class="event-title-cell">${eventLabel} ${entry.lastYear ? "(" + entry.lastYear + ")" : ""}</td></tr>
+          <tr><td colspan="4"><div class="event-title-cell"><span class="event-title">${eventLabel}</span> <span class="last-year">${entry.lastYear ? "(" + entry.lastYear + ")" : ""}<span></div></td></tr>
           <tr class="${entry.thisYear.length === 0 && entry.lastYear.length === 0 ? "not-applicable-row" : ""}">
             <td class="time-cell ${entry.thisYear.length === 0 ? "not-applicable-cell" : ""}">${entry.thisYear.length === 0 ? "Not swam" : entry.thisYear}</td>
             <td class="time-cell 

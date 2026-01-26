@@ -10,12 +10,10 @@ function renderPBCell(achieved) {
 }
 
 /**
- * Renders a table of county targets for a given set of recorded types, age, and category.
+ * Renders a table of personal bests for a given set of times achieved
  * Updates the inner HTML of the element with ID "county-targets-table".
  *
- * @param {string[]} recordedTypes - An array of stroke types (e.g., "Freestyle", "Backstroke").
- * @param {string} age - The age of the swimmer, used to determine target times.
- * @param {string} category - The category of the swimmer (e.g., "Open/Male", "Female").
+ * @param {string[]} timesAchieved - The times achieved as a string array
  */
 function renderPersonalBests(timesAchieved) {
   document.getElementById("2025-personal-bests-table").innerHTML = "";
