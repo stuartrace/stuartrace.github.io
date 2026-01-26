@@ -42,12 +42,14 @@ const swimmersSeedMap = new Map([
 
 const uniqueSwimmersMap = new Map(results.events.flatMap((event) => event.results.map((result) => [result.slice(0, 4).join("|"), result])));
 
-const uniqueSwimmers = [...swimmersSeedMap.values(), ...uniqueSwimmersMap.values()]
-  .map((result) => ({
-    ID: result[0],
-    name: result[1],
-    yearOfBirth: result[2],
-    category: result[3],
+const mergedSwimmersMap = new Map([...swimmersSeedMap, ...uniqueSwimmersMap]);
+
+const uniqueSwimmers = [...mergedSwimmersMap.values()]
+  .map(([id, name, yearOfBirth, category]) => ({
+    ID: id,
+    name,
+    yearOfBirth,
+    category,
   }))
   .sort((a, b) => a.name.localeCompare(b.name));
 
@@ -89,7 +91,7 @@ function showSwimmerDetailsInBoxes(age, name, category, id) {
   // document.getElementById("category").value = category;
 
   $("#swimmerOutput").empty();
-  $("#swimmerOutput").append(`${name} (${id}) is swimming as a ${age} year old in the next counties.`);
+  $("#swimmerOutput").append(`<p class="margin-bottom--none">${name} (${id}) is swimming as a ${age} year old in the next counties.</p>`);
 }
 
 export function lookupSwimmer() {
@@ -365,7 +367,7 @@ export function loadData() {
         }</div><div class="time-cell">${printableTime}</div> <div class="time-cell ${
           countyDelta > 0 ? "negative-delta" : "positive-delta"
         }">${countyDelta.toFixed(2)}</div></div>`;
-        cardHtml += `<div>At: ${swimmerMapL3Plus[distance][type].eventName} on: ${swimmerMapL3Plus[distance][type].date}</div>`;
+        cardHtml += `<div>On ${swimmerMapL3Plus[distance][type].date} at ${swimmerMapL3Plus[distance][type].eventName}</div>`;
         cardHtml += "</div>";
 
         document.getElementById("recorded-times-cards").innerHTML += cardHtml;
@@ -397,16 +399,16 @@ function render2026PBs(swimmerNumber, allDataMap) {
   const timesAchieved = pbs.filter((s) => s[0] === swimmerNumber);
 
   for (const time of timesAchieved) {
-    // const distance = time[5].split(" ")[0];
-    // const type = time[5].split(" ")[1];
-
     const parts = time[5].split(" "); // e.g., ["200", "Individual", "medley"]
     const distance = parts[0]; // "200"
     const type = parts.slice(1).join(" "); // "Individual medley"
     const points = time[8];
 
-    allDataMap[distance + "m"][type].lastYear = time[7];
-    allDataMap[distance + "m"][type].points = "";
+    try {
+      allDataMap[distance + "m"][type].lastYear = time[7];
+    } catch (err) {
+      console.log("Couldn't render allDataMap times");
+    }
   }
 
   return allDataMap;
@@ -444,18 +446,18 @@ function renderAllData(allDataMap) {
         return `
           <tr><td colspan="4" class="event-title-cell">${eventLabel} ${entry.lastYear ? "(" + entry.lastYear + ")" : ""}</td></tr>
           <tr class="${entry.thisYear.length === 0 && entry.lastYear.length === 0 ? "not-applicable-row" : ""}">
-            <td class="time-cell ${entry.thisYear.length === 0 ? "not-applicable-cell" : ""}">${entry.thisYear ?? ""}</td>
+            <td class="time-cell ${entry.thisYear.length === 0 ? "not-applicable-cell" : ""}">${entry.thisYear.length === 0 ? "Not swam" : entry.thisYear}</td>
             <td class="time-cell 
             ${entry.countyDelta.length === 0 || isNaN(entry.countyDelta) ? "not-applicable-cell" : ""}
             ${entry.countyDelta > 0 ? "negative-delta" : ""}
             ${entry.countyDelta < 0 ? "positive-delta" : ""}
-            ">${entry.countyDelta ?? ""}</td>
+            ">${entry.countyDelta ?? ""}&nbsp;</td>
             <td class="time-cell
             ${entry.regionalDelta.length === 0 || isNaN(entry.regionalDelta) ? "not-applicable-cell" : ""}
             ${entry.regionalDelta > 0 ? "negative-delta" : ""}
             ${entry.regionalDelta < 0 ? "positive-delta" : ""}
-            ">${entry.regionalDelta ?? ""}</td>
-            <td> ${entry.points}</td>
+            ">${entry.regionalDelta ?? ""}&nbsp;</td>
+            <td>${entry.thisYear.length === 0 ? "" : entry.points}</td>
           </tr>
         `;
       });
@@ -563,7 +565,7 @@ function renderLevel4Times(swimmerMapL4, distances, recordedTypes, eventTimesTyp
         let cardHtml = "";
         cardHtml += "<div class='event-card'>";
         cardHtml += `<div class='event-card-top-row'><div class='event-title'>${distance} ${eventTimesTypeMap[type]}</div><div></div><div class="time-cell">${printableTime}</div></div>`;
-        cardHtml += `<div>At: ${swimmerMapL4[distance][type].eventName} on: ${swimmerMapL4[distance][type].date}</div>`;
+        cardHtml += `<div>On ${swimmerMapL4[distance][type].date} at ${swimmerMapL4[distance][type].eventName}</div>`;
         cardHtml += "</div>";
 
         document.getElementById("recorded-l4-times-cards").innerHTML += cardHtml;
