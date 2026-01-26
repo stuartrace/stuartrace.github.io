@@ -4,6 +4,7 @@
   --background-colour: #fff;
   --background-shaded-colour: #ddd;
   --text-colour: #000;
+  --light-blue: #66c0fc;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -136,11 +137,23 @@ th {
 }
 
 .event-card-top-row {
-  font-size: 1.25rem;
+  font-size: 1rem;
   display: grid;
-  grid-template-columns: auto 22% 18%;
-  column-gap: 5px;
+  grid-template-columns: 3fr 1fr 1fr;
   margin-bottom: 5px;
+
+  & .event-title {
+    color: black;
+    background-color: var(--light-blue);
+    border-radius: 5px;
+    padding-top: 3px;
+    padding-left: 5px;
+  }
+
+  & .time-cell {
+    text-align: right;
+    margin-left: 10px;
+  }
 }
 
 tr td.time-cell,
@@ -183,7 +196,52 @@ tr.not-applicable-row td {
   /* text-align: center; */
 }
 
+#recorded-times-cards {
+  display: grid;
+  grid-template-columns: 25% 25% 25% auto;
+  gap: 10px;
+  & .event-card {
+    display: inline;
+  }
+}
+
+.multi-table-holder {
+  display: grid;
+  grid-template-columns: 50% 50%;
+
+  .table-with-title-holder {
+    margin-bottom: 20px;
+    padding-left: 10px;
+
+    table {
+      width: 100%;
+    }
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+  #recorded-times-cards {
+    display: grid;
+    grid-template-columns: 33% 33% auto;
+  }
+}
+
 @media only screen and (max-width: 600px) {
+  #recorded-times-cards {
+    display: grid;
+    grid-template-columns: 100%;
+  }
+
+  .multi-table-holder {
+    display: grid;
+    grid-template-columns: 100%;
+
+    .table-with-title-holder {
+      padding-left: 0px;
+      padding-right: 5px;
+    }
+  }
+
   .row-split {
     display: block;
     margin-top: 5px;
