@@ -4,7 +4,6 @@
   --background-colour: #fff;
   --background-shaded-colour: #ddd;
   --text-colour: #000;
-  /* --waves-blue: #06329f; */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -123,17 +122,38 @@ th {
   }
 }
 
-#all-data-holder {
-  width: 100%;
+.align-right {
+  text-align: right;
+}
 
-  .not-applicable-cell {
-    min-height: 2rem;
+#all-data-table {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  gap: 10px;
+
+  & .event-data-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 5px;
+    margin-top: 5px;
+
+    & .event-data-output,
+    .event-data-label {
+      padding: 5px;
+      border-radius: 5px;
+    }
+
+    .not-applicable {
+      color: var(--disabled-colour);
+    }
   }
 
   & .event-title-cell {
-    background-color: white;
-    color: var(--highlight-colour);
+    color: white;
+    background-color: var(--highlight-colour);
     padding: 5px;
+    font-weight: bold;
+    border-radius: 5px;
 
     display: grid;
     grid-template-columns: 1fr auto;
@@ -223,6 +243,11 @@ tr.not-applicable-row td {
 }
 
 @media only screen and (max-width: 1000px) {
+  #all-data-table {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
   #recorded-times-cards {
     display: grid;
     grid-template-columns: 33% 33% auto;
@@ -230,6 +255,11 @@ tr.not-applicable-row td {
 }
 
 @media only screen and (max-width: 600px) {
+  #all-data-table {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
   #recorded-times-cards {
     display: grid;
     grid-template-columns: 100%;

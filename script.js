@@ -437,29 +437,49 @@ function renderAllData(allDataMap) {
           points: "",
         };
 
-        const eventLabel = `${distance} ${stroke}`;
+        const strokeMap = {
+          Backstroke: "Back",
+          Breaststroke: "Breast",
+          Butterfly: "Fly",
+          Freestyle: "Free",
+          "Individual Medley": "IM",
+        };
+
+        const eventLabel = `${distance} ${strokeMap[stroke]}`;
 
         if (entry.thisYear.length === 0 && entry.lastYear.length === 0) {
           return "";
         }
 
-        return `
-          <tr><td colspan="4"><div class="event-title-cell"><span class="event-title">${eventLabel}</span> <span class="last-year">${entry.lastYear ? "(" + entry.lastYear + ")" : ""}<span></div></td></tr>
-          <tr class="${entry.thisYear.length === 0 && entry.lastYear.length === 0 ? "not-applicable-row" : ""}">
-            <td class="time-cell ${entry.thisYear.length === 0 ? "not-applicable-cell" : ""}">${entry.thisYear.length === 0 ? "Not swam" : entry.thisYear}</td>
-            <td class="time-cell 
-            ${entry.countyDelta.length === 0 || isNaN(entry.countyDelta) ? "not-applicable-cell" : ""}
+        return `<div class="event-card">
+          
+          <div class="event-title-cell">${eventLabel}</div>
+          
+          <div class="event-data-row">
+            <div class="event-data-label">PB:</div>
+            <div class="event-data-output align-right">${entry.thisYear && entry.thisYear.length > 0 ? entry.thisYear : "--"}</div>
+          </div>
+          <div class="event-data-row">
+            <div class="event-data-label">County:</div>
+            <div class="event-data-output align-right
+            ${entry.countyDelta.length === 0 || isNaN(entry.countyDelta) ? "not-applicable" : ""}
             ${entry.countyDelta > 0 ? "negative-delta" : ""}
             ${entry.countyDelta < 0 ? "positive-delta" : ""}
-            ">${entry.countyDelta ?? ""}&nbsp;</td>
-            <td class="time-cell
-            ${entry.regionalDelta.length === 0 || isNaN(entry.regionalDelta) ? "not-applicable-cell" : ""}
+            ">${entry.countyDelta ? entry.countyDelta : "n/a"}</div>
+          </div>
+          <div class="event-data-row">
+            <div class="event-data-label">Region:</div>
+            <div class="event-data-output align-right
+            ${entry.regionalDelta.length === 0 || isNaN(entry.regionalDelta) ? "not-applicable" : ""}
             ${entry.regionalDelta > 0 ? "negative-delta" : ""}
             ${entry.regionalDelta < 0 ? "positive-delta" : ""}
-            ">${entry.regionalDelta ?? ""}&nbsp;</td>
-            <td>${entry.thisYear.length === 0 ? "" : entry.points}</td>
-          </tr>
-        `;
+            ">${entry.regionalDelta ? entry.regionalDelta : "n/a"}</div>
+          </div>
+          <div class="event-data-row">
+            <div class="event-data-label not-applicable">2025:</div>
+            <div class="event-data-output align-right not-applicable">${entry.lastYear ? entry.lastYear : "n/a"}</div>
+          </div>
+        </div>`;
       });
     })
     .join("");
