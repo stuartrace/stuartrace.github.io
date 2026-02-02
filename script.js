@@ -75,7 +75,7 @@ export function changeSwimmer() {
     childAge = 17;
   }
   writeSwimmerToLocalStorage(childAge, thisSwimmer.name, category, thisSwimmer.ID);
-  showSwimmerDetailsInBoxes();
+  showSwimmerDetailsInBoxes(childAge, thisSwimmer?.name, thisSwimmer?.ID);
 
   loadData();
 }
@@ -87,14 +87,13 @@ function writeSwimmerToLocalStorage(age, name, category, id) {
   localStorage.setItem("child1-swimmer-number", id);
 }
 
-function showSwimmerDetailsInBoxes(age, name, category, id) {
-  // document.getElementById("age").value = age;
-  // document.getElementById("name").value = name;
-  // document.getElementById("swimmerNumber").value = id;
-  // document.getElementById("category").value = category;
-
+function showSwimmerDetailsInBoxes(age, name, id) {
   $("#swimmerOutput").empty();
-  $("#swimmerOutput").append(`<p class="margin-bottom--none">${name} (${id}) is swimming as a ${age} year old in the next counties.</p>`);
+  $("#swimmerOutput").append(`
+  <p class="margin-bottom--none">
+    ${name} (<a href="https://www.swimmingresults.org/individualbest/personal_best.php?mode=A&tiref=${id}" target="_blank" rel="noopener">${id}</a>) is swimming as a ${age} year old in the next counties.
+  </p>
+`);
 }
 
 export function lookupSwimmer() {
@@ -216,7 +215,7 @@ export function loadData() {
 
   document.getElementById("output").innerHTML = "";
   document.getElementById("enter-times-row").style.display = "block";
-  showSwimmerDetailsInBoxes(age, name, category, swimmerNumber);
+  showSwimmerDetailsInBoxes(age, name, swimmerNumber);
 
   const distances = ["50m", "100m", "200m", "400m"];
   const personalTypes = ["Back", "Breast", "Butterfly", "Free", "IM"];
@@ -347,7 +346,7 @@ export function loadData() {
         }
 
         try {
-          let regionalTime = regionalTimesData[category][distance][type][age];
+          let regionalTime = regionalTimesData[category][distance][type][age - 1];
           if (regionalTime?.includes(":")) {
             regionalTime = parseFloat(regionalTime.split(":")[0]) * 60 + parseFloat(regionalTime.split(":")[1]);
           }
@@ -387,8 +386,6 @@ export function loadData() {
   if (Object.keys(swimmerMapL3Plus).length === 0) {
     document.getElementById("recorded-times-cards").innerHTML += "No swims found";
   }
-
-  console.log("2025", swimmerMapL3Plus);
 
   allDataMap = render2026PBs(swimmerNumber, allDataMap);
   renderCountyTargets(recordedTypes, age, category, countyTimesAchieved);
@@ -526,11 +523,11 @@ function renderRegionalTargetsCell(category, type, age, distance, achieved) {
     !regionalTimesData[category] ||
     !regionalTimesData[category][distance] ||
     !regionalTimesData[category][distance][type] ||
-    regionalTimesData[category][distance][type][age] === ""
+    regionalTimesData[category][distance][type][age - 1] === ""
   ) {
     return "<td class='not-applicable-cell'>n/a</td>";
   } else {
-    return `<td class='center ${achieved ? "positive-delta" : "negative-delta"}'>${regionalTimesData[category][distance][type][age]}</td>`;
+    return `<td class='center ${achieved ? "positive-delta" : "negative-delta"}'>${regionalTimesData[category][distance][type][age - 1]}</td>`;
   }
 }
 

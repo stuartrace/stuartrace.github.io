@@ -21,6 +21,10 @@ body {
   margin: 0;
 }
 
+a {
+  color: var(--highlight-colour);
+}
+
 .content {
   padding: 15px;
 }
