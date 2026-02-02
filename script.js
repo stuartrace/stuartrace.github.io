@@ -70,7 +70,10 @@ export function changeSwimmer() {
   const thisSwimmer = uniqueSwimmers.find((s) => s.ID === swimmerId);
   const category = thisSwimmer.category === "Female" ? "Female" : "Male";
   const today = new Date();
-  const childAge = today.getFullYear() - 1999 - thisSwimmer.yearOfBirth;
+  let childAge = today.getFullYear() - 1999 - thisSwimmer.yearOfBirth;
+  if (childAge > 17) {
+    childAge = 17;
+  }
   writeSwimmerToLocalStorage(childAge, thisSwimmer.name, category, thisSwimmer.ID);
   showSwimmerDetailsInBoxes();
 
