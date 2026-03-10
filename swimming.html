@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="./swimming.css" />
     <script src="jquery-3.7.1.min.js"></script>
     <script type="module" src="script.js"></script>
-    <script type="module" src="swimming-render2025PBs.js"></script>
   </head>
   <body>
     <div class="page-title">Swimming Times Calculator</div>
@@ -17,30 +16,8 @@
           <span class="row-split">
             <label for="recordedSwimmers">Swimmer</label>
             <select id="recordedSwimmers" onChange="changeSwimmer()"></select>
-            <!-- <label for="recordedSwimmers">Swimmer details:</label> -->
           </span>
           <div id="swimmerOutput"></div>
-          <!-- <span class="row-split">
-            <label for="swimmerNumber">ASA Number</label><input type="number" id="swimmerNumber" onKeyUp="lookupSwimmer()" /> <label for="name">Name</label
-            ><input id="name" type="text" />
-            <label for="age">Age</label>
-            <select id="age">
-              <option id="10">10</option>
-              <option id="11">11</option>
-              <option id="12">12</option>
-              <option id="13">13</option>
-              <option id="14">14</option>
-              <option id="15">15</option>
-              <option id="16">16</option>
-            </select>
-            <label for="category">Category</label>
-            <select id="category">
-              <option id="Male">Male</option>
-              <option id="Female">Female</option>
-            </select>
-          </span> -->
-
-          <!-- <input type="button" value="Save details" onClick="saveData()" /> -->
         </div>
       </div>
       <div id="output"></div>
@@ -88,21 +65,6 @@
             <tbody id="regional-targets-table"></tbody>
           </table>
           <p><a href="https://www.eastswimming.org/wp-content/uploads/2025/11/Qualifying-Times-2026.pdf" target="_blank" rel="noopener">Full data</a></p>
-        </div>
-        <div class="table-with-title-holder">
-          <div class="sub-title">2025 Personal Bests (L3)</div>
-          <table>
-            <thead>
-              <tr>
-                <th></th>
-                <th>50m</th>
-                <th>100m</th>
-                <th>200m</th>
-                <th>400m</th>
-              </tr>
-            </thead>
-            <tbody id="2025-personal-bests-table"></tbody>
-          </table>
         </div>
       </div>
       <div class="card">

@@ -14,8 +14,6 @@ const swimmersSeedMap = new Map([
   ["1503220|Ewan Wilcox|11|Open/Male", ["1503220", "Ewan Wilcox", "11", "Open/Male"]],
   ["1662020|Nathanel Ilie|11|Open/Male", ["1662020", "Nathanel Ilie", "11", "Open/Male"]],
   ["1680628|Toby Thomas|11|Open/Male", ["1680628", "Toby Thomas", "11", "Open/Male"]],
-  ["1707520|Yannick Crowther|12|Open/Male", ["1707520", "Yannick Crowther", "12", "Open/Male"]],
-  ["1796777|Remus Chinery|12|Open/Male", ["1796777", "Remus Chinery", "12", "Open/Male"]],
   ["1647375|Hannah Smith|10|Female", ["1647375", "Hannah Smith", "10", "Female"]],
   ["1761783|Mya Smith|13|Female", ["1761783", "Mya Smith", "13", "Female"]],
   ["1680629|Harriet Thomas|13|Female", ["1680629", "Harriet Thomas", "13", "Female"]],
@@ -24,17 +22,12 @@ const swimmersSeedMap = new Map([
   ["1576896|Emma Lindsey|15|Female", ["1576896", "Emma Lindsey", "15", "Female"]],
   ["1732278|Bernardo Silva|12|Open/Male", ["1732278", "Bernardo Silva", "12", "Open/Male"]],
   ["1613655|Paige Westlake|15|Female", ["1613655", "Paige Westlake", "15", "Female"]],
-  ["1786909|Sofia Briscan|12|Female", ["1786909", "Sofia Briscan", "12", "Female"]],
   ["1786899|Violet Gallagher|14|Female", ["1786899", "Violet Gallagher", "14", "Female"]],
-  ["1807307|Maria Briscan|14|Female", ["1807307", "Maria Briscan", "14", "Female"]],
-  ["1766536|Erica Barabas|13|Female", ["1766536", "Erica Barabas", "13", "Female"]],
   ["1803614|Fareed Omotosho|11|Open/Male", ["1803614", "Fareed Omotosho", "11", "Open/Male"]],
-  ["1589228|Brandon Newton|9|Open/Male", ["1589228", "Brandon Newton", "9", "Open/Male"]],
   ["1813869|Aliona Rebello|12|Female", ["1813869", "Aliona Rebello", "12", "Female"]],
   ["1281250|Owen Young|7|Open/Male", ["1281250", "Owen Young", "7", "Open/Male"]],
   ["1625109|Eva Wilcox|14|Female", ["1625109", "Eva Wilcox", "14", "Female"]],
   ["1822118|Samad Omotosho|15|Open/Male", ["1822118", "Samad Omotosho", "15", "Open/Male"]],
-  ["1822121|Ella Thorndyke|14|Female", ["1822121", "Ella Thorndyke", "14", "Female"]],
   ["1813873|Jessica Smith|15|Female", ["1813873", "Jessica Smith", "15", "Female"]],
   ["1816617|Emmy Morley|15|Female", ["1816617", "Emmy Morley", "15", "Female"]],
   ["1836038|George Tymoshenko|14|Open/Male", ["1836038", "George Tymoshenko", "14", "Open/Male"]],
@@ -288,6 +281,7 @@ export function loadData() {
         } catch (err) {
           console.log("err", err);
           rowHtml += `<td class="time-cell"></td><td class="time-cell"></td><td class="delete-cross" onClick="deleteTime('child1', '${type}', '${distance}')">X</td>`;
+          continue;
         }
         rowHtml += "</tr>";
       }
@@ -343,6 +337,7 @@ export function loadData() {
           allDataMap[distance][type].countyDelta = countyDelta.toFixed(2);
         } catch (err) {
           console.log("err", err);
+          continue;
         }
 
         try {
@@ -407,7 +402,8 @@ function render2026PBs(swimmerNumber, allDataMap) {
     try {
       allDataMap[distance + "m"][type].lastYear = time[7];
     } catch (err) {
-      console.log("Couldn't render allDataMap times");
+      console.log("Couldn't render allDataMap times", err);
+      continue;
     }
   }
 
@@ -473,7 +469,7 @@ function renderAllData(allDataMap) {
             ${entry.regionalDelta.length === 0 || isNaN(entry.regionalDelta) ? "not-applicable" : ""}
             ${entry.regionalDelta > 0 ? "negative-delta" : ""}
             ${entry.regionalDelta < 0 ? "positive-delta" : ""}
-            ">${entry.regionalDelta ? entry.regionalDelta : "n/a"}</div>
+            ">${entry.regionalDelta && !isNaN(entry.regionalDelta) ? entry.regionalDelta : "n/a"}</div>
           </div>
           <div class="event-data-row">
             <div class="event-data-label not-applicable">2025:</div>
@@ -564,6 +560,7 @@ function renderLevel4Times(swimmerMapL4, distances, recordedTypes, eventTimesTyp
         thisTime = swimmerMapL4[distance][type].time;
       } catch (e) {
         // console.log("Nah", e)
+        continue;
       }
 
       if (thisTime !== null) {
@@ -580,6 +577,7 @@ function renderLevel4Times(swimmerMapL4, distances, recordedTypes, eventTimesTyp
           delta = Number.parseFloat(thisTime) - Number.parseFloat(countyTime);
         } catch (err) {
           console.log("err", err);
+          continue;
         }
 
         let cardHtml = "";
