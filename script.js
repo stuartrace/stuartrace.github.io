@@ -300,6 +300,9 @@ export function loadData() {
   const countyTimesAchieved = {};
   const regionalTimesAchieved = {};
 
+  let numberOfEventsSwum = 0;
+  let totalDistanceCompleted = 0;
+
   // Render recorded times
   for (const distance of distances) {
     for (const type of recordedTypes) {
@@ -315,6 +318,8 @@ export function loadData() {
       }
 
       if (thisTime !== null) {
+        numberOfEventsSwum += 1;
+        totalDistanceCompleted += parseInt(distance.replace("m", ""));
         const printableTime = thisTime;
         allDataMap[distance][type].thisYear = printableTime;
         allDataMap[distance][type].points = swimmerMapL3Plus[distance][type].points;
@@ -372,9 +377,7 @@ export function loadData() {
     }
   }
 
-  if (Object.keys(swimmerMapL4).length === 0) {
-    document.getElementById("recorded-l4-times-cards").innerHTML += "No swims found";
-  } else {
+  if (Object.keys(swimmerMapL4).length !== 0) {
     renderLevel4Times(swimmerMapL4, distances, recordedTypes, eventTimesTypeMap, category);
   }
 
@@ -386,6 +389,15 @@ export function loadData() {
   renderCountyTargets(recordedTypes, age, category, countyTimesAchieved);
   renderRegionalTargets(recordedTypes, age, category, regionalTimesAchieved);
   renderAllData(allDataMap);
+  if (numberOfEventsSwum > 0) {
+    renderSummaryInfo(numberOfEventsSwum, totalDistanceCompleted, name?.split(" ")[0]);
+  }
+}
+
+function renderSummaryInfo(numberOfEventsSwum, totalDistanceCompleted, swimmerName) {
+  document.getElementById("swimmerOutput").innerHTML += `
+    <p class="margin-bottom--none">This season, ${swimmerName} has swum in <strong>${numberOfEventsSwum}</strong> Level 3+ events, completing a total distance of <strong>${totalDistanceCompleted}m</strong>.</p>
+  `;
 }
 
 function render2026PBs(swimmerNumber, allDataMap) {
@@ -550,6 +562,7 @@ function renderRegionalTargets(recordedTypes, age, category, timesAchieved) {
 }
 
 function renderLevel4Times(swimmerMapL4, distances, recordedTypes, eventTimesTypeMap, category) {
+  $("#recorded-l4-times-cards-holder").show();
   // Render recorded times
   for (const distance of distances) {
     for (const type of recordedTypes) {
