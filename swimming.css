@@ -232,6 +232,15 @@ tr.not-applicable-row td {
   }
 }
 
+#recorded-l4-times-cards {
+  display: grid;
+  grid-template-columns: 25% 25% 25% auto;
+  gap: 10px;
+  & .event-card {
+    display: inline;
+  }
+}
+
 .multi-table-holder {
   display: grid;
   grid-template-columns: 50% 50%;

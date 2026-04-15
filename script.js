@@ -21,7 +21,6 @@ const swimmersSeedMap = new Map([
   ["1737305|Phoebe Gallagher|15|Female", ["1737305", "Phoebe Gallagher", "15", "Female"]],
   ["1576896|Emma Lindsey|15|Female", ["1576896", "Emma Lindsey", "15", "Female"]],
   ["1732278|Bernardo Silva|12|Open/Male", ["1732278", "Bernardo Silva", "12", "Open/Male"]],
-  ["1613655|Paige Westlake|15|Female", ["1613655", "Paige Westlake", "15", "Female"]],
   ["1786899|Violet Gallagher|14|Female", ["1786899", "Violet Gallagher", "14", "Female"]],
   ["1803614|Fareed Omotosho|11|Open/Male", ["1803614", "Fareed Omotosho", "11", "Open/Male"]],
   ["1813869|Aliona Rebello|12|Female", ["1813869", "Aliona Rebello", "12", "Female"]],
@@ -30,7 +29,6 @@ const swimmersSeedMap = new Map([
   ["1822118|Samad Omotosho|15|Open/Male", ["1822118", "Samad Omotosho", "15", "Open/Male"]],
   ["1813873|Jessica Smith|15|Female", ["1813873", "Jessica Smith", "15", "Female"]],
   ["1816617|Emmy Morley|15|Female", ["1816617", "Emmy Morley", "15", "Female"]],
-  ["1836038|George Tymoshenko|14|Open/Male", ["1836038", "George Tymoshenko", "14", "Open/Male"]],
 ]);
 
 const uniqueSwimmersMap = new Map(results.events.flatMap((event) => event.results.map((result) => [result.slice(0, 4).join("|"), result])));
@@ -378,7 +376,9 @@ export function loadData() {
   }
 
   if (Object.keys(swimmerMapL4).length !== 0) {
-    renderLevel4Times(swimmerMapL4, distances, recordedTypes, eventTimesTypeMap, category);
+    renderLevel4Times(swimmerMapL4, distances, recordedTypes, eventTimesTypeMap, category, age);
+  } else {
+    document.getElementById("recorded-l4-times-cards").innerHTML += "No swims found";
   }
 
   if (Object.keys(swimmerMapL3Plus).length === 0) {
@@ -561,7 +561,7 @@ function renderRegionalTargets(recordedTypes, age, category, timesAchieved) {
   }
 }
 
-function renderLevel4Times(swimmerMapL4, distances, recordedTypes, eventTimesTypeMap, category) {
+function renderLevel4Times(swimmerMapL4, distances, recordedTypes, eventTimesTypeMap, category, age) {
   $("#recorded-l4-times-cards-holder").show();
   // Render recorded times
   for (const distance of distances) {
@@ -581,16 +581,6 @@ function renderLevel4Times(swimmerMapL4, distances, recordedTypes, eventTimesTyp
 
         if (thisTime.includes(":")) {
           thisTime = parseFloat(thisTime.split(":")[0]) * 60 + parseFloat(thisTime.split(":")[1]);
-        }
-        try {
-          let countyTime = countyTimesData[category][distance][type][age];
-          if (countyTime?.includes(":")) {
-            countyTime = parseFloat(countyTime.split(":")[0]) * 60 + parseFloat(countyTime.split(":")[1]);
-          }
-          delta = Number.parseFloat(thisTime) - Number.parseFloat(countyTime);
-        } catch (err) {
-          console.log("err", err);
-          continue;
         }
 
         let cardHtml = "";
