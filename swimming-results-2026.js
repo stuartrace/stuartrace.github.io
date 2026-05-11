@@ -286,6 +286,12 @@ export function getResults() {
           ["1761786", "Fearne Hands", "15", "Female", "Felixstowe", "50 Backstroke", "F", "51.81", "115"],
         ],
       },
+      {
+        eventName: "Eastern Regional Championships",
+        date: "9th May",
+        level: "1",
+        results: [["1732229", "Noah Race", "14", "Open/Male", "Felixstowe", "50 Freestyle", "H", "32.10", "260"]],
+      },
     ],
   };
 }

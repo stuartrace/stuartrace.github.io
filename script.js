@@ -344,7 +344,7 @@ export function loadData() {
         }
 
         try {
-          let regionalTime = regionalTimesData[category][distance][type][age - 1];
+          let regionalTime = regionalTimesData[category][distance][type][age];
           if (regionalTime?.includes(":")) {
             regionalTime = parseFloat(regionalTime.split(":")[0]) * 60 + parseFloat(regionalTime.split(":")[1]);
           }
@@ -531,11 +531,11 @@ function renderRegionalTargetsCell(category, type, age, distance, achieved) {
     !regionalTimesData[category] ||
     !regionalTimesData[category][distance] ||
     !regionalTimesData[category][distance][type] ||
-    regionalTimesData[category][distance][type][age - 1] === ""
+    regionalTimesData[category][distance][type][age] === ""
   ) {
     return "<td class='not-applicable-cell'>n/a</td>";
   } else {
-    return `<td class='center ${achieved ? "positive-delta" : "negative-delta"}'>${regionalTimesData[category][distance][type][age - 1]}</td>`;
+    return `<td class='center ${achieved ? "positive-delta" : "negative-delta"}'>${regionalTimesData[category][distance][type][age]}</td>`;
   }
 }
 
