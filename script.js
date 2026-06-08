@@ -6,6 +6,7 @@ import { get2025Results } from "./swimming-2025-pbs.js";
 const countyTimesData = getData();
 const regionalTimesData = getRegionalTimes();
 const results = getResults();
+const BIRTH_YEAR_OFFSET = 1999;
 
 const swimmersSeedMap = new Map([
   ["1732229|Noah Race|14|Open/Male", ["1732229", "Noah Race", "14", "Open/Male"]],
@@ -43,6 +44,9 @@ const uniqueSwimmers = [...mergedSwimmersMap.values()]
   }))
   .sort((a, b) => a.name.localeCompare(b.name));
 
+/**
+ * Reads swimmer details from form inputs and persists them to localStorage.
+ */
 function saveData() {
   const age = document.getElementById("age").value;
   const name = document.getElementById("name").value;
@@ -55,12 +59,15 @@ function saveData() {
   loadData();
 }
 
+/**
+ * Handles swimmer selection change from the dropdown, calculates age, and refreshes the UI.
+ */
 export function changeSwimmer() {
   const swimmerId = $("#recordedSwimmers").val();
   const thisSwimmer = uniqueSwimmers.find((s) => s.ID === swimmerId);
   const category = thisSwimmer.category === "Female" ? "Female" : "Male";
   const today = new Date();
-  let childAge = today.getFullYear() - 1999 - thisSwimmer.yearOfBirth;
+  let childAge = today.getFullYear() - BIRTH_YEAR_OFFSET - thisSwimmer.yearOfBirth;
   if (childAge > 17) {
     childAge = 17;
   }
@@ -70,6 +77,14 @@ export function changeSwimmer() {
   loadData();
 }
 
+/**
+ * Persists swimmer details to localStorage.
+ *
+ * @param {number|string} age - The swimmer's age.
+ * @param {string} name - The swimmer's full name.
+ * @param {string} category - The swimmer's category ("Male" or "Female").
+ * @param {string} id - The swimmer's unique ID.
+ */
 function writeSwimmerToLocalStorage(age, name, category, id) {
   localStorage.setItem("child1-age", age);
   localStorage.setItem("child1-name", name);
@@ -77,6 +92,13 @@ function writeSwimmerToLocalStorage(age, name, category, id) {
   localStorage.setItem("child1-swimmer-number", id);
 }
 
+/**
+ * Renders the swimmer's name, ID link, and age into the swimmer output section.
+ *
+ * @param {number|string} age - The swimmer's age.
+ * @param {string} name - The swimmer's full name.
+ * @param {string} id - The swimmer's unique ID.
+ */
 function showSwimmerDetailsInBoxes(age, name, id) {
   $("#swimmerOutput").empty();
   $("#swimmerOutput").append(`
@@ -86,6 +108,10 @@ function showSwimmerDetailsInBoxes(age, name, id) {
 `);
 }
 
+/**
+ * Looks up a swimmer by their ID from the input field, populates their details
+ * from results data, saves to localStorage, and refreshes the UI.
+ */
 export function lookupSwimmer() {
   const swimmerNumber = document.getElementById("swimmerNumber").value;
 
@@ -98,7 +124,7 @@ export function lookupSwimmer() {
       localStorage.setItem("child1-name", swimmerEntry[1]);
       document.getElementById("name").value = swimmerEntry[1];
       const today = new Date();
-      const age = today.getFullYear() - 1999 - swimmerEntry[2];
+      const age = today.getFullYear() - BIRTH_YEAR_OFFSET - swimmerEntry[2];
       localStorage.setItem("child1-age", age);
       $("#age").val(age);
       const category = swimmerEntry[3] === "Female" ? "Female" : "Male";
@@ -109,8 +135,43 @@ export function lookupSwimmer() {
   }
 }
 
+/**
+ * Builds a nested map of personal best times for a swimmer across a set of events.
+ *
+ * @param {Array<{eventName: string, date: string, results: string[][]}>} events - Events to search through.
+ * @param {string} swimmerNumber - The swimmer's unique ID to filter results by.
+ * @returns {Object<string, Object<string, {time: string, eventName: string, date: string, points: string}>>} Map keyed by distance then stroke.
+ */
+function buildBestTimesMap(events, swimmerNumber) {
+  const map = {};
+  for (const event of events) {
+    for (const result of event.results.filter((r) => r[0] === swimmerNumber)) {
+      const [distanceNum, ...styleParts] = result[5].split(" ");
+      const distance = distanceNum + "m";
+      const style = styleParts.join(" ");
+      map[distance] ??= {};
+      map[distance][style] ??= {};
+      if (!map[distance][style].time || getTimeAsSeconds(result[7]) < getTimeAsSeconds(map[distance][style].time)) {
+        map[distance][style] = { time: result[7], eventName: event.eventName, date: event.date, points: result[8] };
+      }
+    }
+  }
+  return map;
+}
+
+/**
+ * Main render function. Loads the selected swimmer from localStorage, computes
+ * personal bests, county/regional deltas, and renders all UI sections.
+ */
 export function loadData() {
   $("#recordedSwimmers").empty();
+  $("#recordedSwimmers").append(
+    $("<option>", {
+      value: "",
+      text: "Select a swimmer",
+      disabled: true,
+    }),
+  );
   $.each(uniqueSwimmers, function (i, swimmer) {
     $("#recordedSwimmers").append(
       $("<option>", {
@@ -121,7 +182,7 @@ export function loadData() {
   });
 
   const swimmerNumber = localStorage.getItem("child1-swimmer-number");
-  $("#recordedSwimmers").val(swimmerNumber);
+  $("#recordedSwimmers").val(swimmerNumber || "");
 
   document.getElementById("times-table").innerHTML = "";
   $("#recorded-times-cards").empty();
@@ -134,74 +195,24 @@ export function loadData() {
   const name = localStorage.getItem("child1-name");
   const category = localStorage.getItem("child1-category");
 
-  if (!age?.length > 0 || !name?.length > 0 || !category?.length) {
-    document.getElementById("output").innerHTML = "Select a name, age and category to continue";
-    document.getElementById("enter-times-row").style.display = "none";
-    return;
-  }
+  // if (!age?.length > 0 || !name?.length > 0 || !category?.length) {
+  //   document.getElementById("output").innerHTML = "Select a name, age and category to continue";
+  //   document.getElementById("enter-times-row").style.display = "none";
+  //   return;
+  // }
 
-  for (const swimmersEvent of swimmersEvents) {
-    document.getElementById("events-entered-cards").innerHTML += `<div class="event-card">${swimmersEvent.eventName} - ${swimmersEvent.date}</div>`;
-  }
+  document.getElementById("events-entered-cards").innerHTML = swimmersEvents
+    .map((swimmersEvent) => `<div class="event-card">${swimmersEvent.eventName} - ${swimmersEvent.date}</div>`)
+    .join("");
 
-  let matchingResults = swimmersEvents.flatMap((event) => event.results.filter((result) => result[0] === swimmerNumber));
-
-  // Adding the same value to each object using map
-  matchingResults = matchingResults.map((result) => {
-    // Adding a new field 'location' with the same value
-    result.location = results.eventName;
-    result.date = results.date;
-    return result;
-  });
-
-  let swimmerMapL3Plus = {};
-
-  for (const event of results.events.filter((e) => e.level < 4)) {
-    const swimmersResults = event.results.filter((result) => result[0] === swimmerNumber);
-    for (const result of swimmersResults) {
-      const distanceNum = result[5].split(" ")[0];
-      const distance = result[5].split(" ")[0] + "m";
-      const style = result[5].split(distanceNum + " ")[1];
-      if (!swimmerMapL3Plus[distance]) {
-        swimmerMapL3Plus[distance] = {};
-      }
-
-      if (!swimmerMapL3Plus[distance][style]) {
-        swimmerMapL3Plus[distance][style] = {};
-      }
-
-      if (!swimmerMapL3Plus[distance][style].time || getTimeAsSeconds(result[7]) < getTimeAsSeconds(swimmerMapL3Plus[distance][style].time)) {
-        swimmerMapL3Plus[distance][style].time = result[7];
-        swimmerMapL3Plus[distance][style].eventName = event.eventName;
-        swimmerMapL3Plus[distance][style].date = event.date;
-        swimmerMapL3Plus[distance][style].points = result[8];
-      }
-    }
-  }
-
-  let swimmerMapL4 = {};
-
-  for (const event of results.events.filter((e) => e.level === "4")) {
-    const swimmersResults = event.results.filter((result) => result[0] === swimmerNumber);
-    for (const result of swimmersResults) {
-      const distanceNum = result[5].split(" ")[0];
-      const distance = result[5].split(" ")[0] + "m";
-      const style = result[5].split(distanceNum + " ")[1];
-      if (!swimmerMapL4[distance]) {
-        swimmerMapL4[distance] = {};
-      }
-
-      if (!swimmerMapL4[distance][style]) {
-        swimmerMapL4[distance][style] = {};
-      }
-
-      if (!swimmerMapL4[distance][style].time || getTimeAsSeconds(result[7]) < getTimeAsSeconds(swimmerMapL4[distance][style].time)) {
-        swimmerMapL4[distance][style].time = result[7];
-        swimmerMapL4[distance][style].eventName = event.eventName;
-        swimmerMapL4[distance][style].date = event.date;
-      }
-    }
-  }
+  const swimmerMapL3Plus = buildBestTimesMap(
+    results.events.filter((e) => Number(e.level) < 4),
+    swimmerNumber,
+  );
+  const swimmerMapL4 = buildBestTimesMap(
+    results.events.filter((e) => Number(e.level) === 4),
+    swimmerNumber,
+  );
 
   document.getElementById("output").innerHTML = "";
   document.getElementById("enter-times-row").style.display = "block";
@@ -219,38 +230,12 @@ export function loadData() {
     IM: "Individual Medley",
   };
 
-  let allDataMap = {
-    "50m": {
-      Backstroke: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
-      Breaststroke: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
-      Butterfly: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
-      Freestyle: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
-      "Individual Medley": { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
-    },
-    "100m": {
-      Backstroke: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
-      Breaststroke: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
-      Butterfly: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
-      Freestyle: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
-      "Individual Medley": { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
-    },
-    "200m": {
-      Backstroke: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
-      Breaststroke: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
-      Butterfly: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
-      Freestyle: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
-      "Individual Medley": { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
-    },
-    "400m": {
-      Backstroke: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
-      Breaststroke: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
-      Butterfly: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
-      Freestyle: { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
-      "Individual Medley": { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" },
-    },
-  };
+  let allDataMap = Object.fromEntries(
+    distances.map((d) => [d, Object.fromEntries(recordedTypes.map((t) => [t, { lastYear: "", thisYear: "", countyDelta: "", regionalDelta: "" }]))]),
+  );
 
   let rowHtml = "";
+  let timesTableHtml = "";
 
   // Render personal bests
   for (const distance of distances) {
@@ -261,16 +246,12 @@ export function loadData() {
         rowHtml = "<tr>";
         rowHtml += `<td>${distance}</td><td>${type}</td><td class="time-cell">${thisTime}</td>`;
 
-        if (thisTime.includes(":")) {
-          thisTime = parseFloat(thisTime.split(":")[0]) * 60 + parseFloat(thisTime.split(":")[1]);
-        }
+        thisTime = getTimeAsSeconds(thisTime);
         try {
           const typeMapped = personalToCountyTypeMap[type];
           let countyTime = countyTimesData[category][distance][typeMapped][age];
           rowHtml += `<td class="time-cell">${countyTime}</td>`;
-          if (countyTime?.includes(":")) {
-            countyTime = parseFloat(countyTime.split(":")[0]) * 60 + parseFloat(countyTime.split(":")[1]);
-          }
+          countyTime = getTimeAsSeconds(countyTime);
           const delta = Number.parseFloat(thisTime) - Number.parseFloat(countyTime);
           rowHtml += `<td class="time-cell ${isNaN(delta) || delta > 0 ? "negative-delta" : "positive-delta"}">${
             isNaN(delta) ? "n/a" : delta.toFixed(2)
@@ -282,9 +263,10 @@ export function loadData() {
         }
         rowHtml += "</tr>";
       }
-      document.getElementById("times-table").innerHTML += rowHtml;
+      timesTableHtml += rowHtml;
     }
   }
+  document.getElementById("times-table").innerHTML = timesTableHtml;
 
   const eventTimesTypeMap = {
     Backstroke: "Back",
@@ -299,6 +281,7 @@ export function loadData() {
 
   let numberOfEventsSwum = 0;
   let totalDistanceCompleted = 0;
+  const recordedTimesCards = [];
 
   // Render recorded times
   for (const distance of distances) {
@@ -321,14 +304,9 @@ export function loadData() {
         allDataMap[distance][type].thisYear = printableTime;
         allDataMap[distance][type].points = swimmerMapL3Plus[distance][type].points;
 
-        if (thisTime.includes(":")) {
-          thisTime = parseFloat(thisTime.split(":")[0]) * 60 + parseFloat(thisTime.split(":")[1]);
-        }
+        thisTime = getTimeAsSeconds(thisTime);
         try {
-          let countyTime = countyTimesData[category][distance][type][age];
-          if (countyTime?.includes(":")) {
-            countyTime = parseFloat(countyTime.split(":")[0]) * 60 + parseFloat(countyTime.split(":")[1]);
-          }
+          let countyTime = getTimeAsSeconds(countyTimesData[category][distance][type][age]);
           countyDelta = Number.parseFloat(thisTime) - Number.parseFloat(countyTime);
           if (countyDelta < 0) {
             if (!countyTimesAchieved[type]) {
@@ -343,10 +321,7 @@ export function loadData() {
         }
 
         try {
-          let regionalTime = regionalTimesData[category][distance][type][age];
-          if (regionalTime?.includes(":")) {
-            regionalTime = parseFloat(regionalTime.split(":")[0]) * 60 + parseFloat(regionalTime.split(":")[1]);
-          }
+          let regionalTime = getTimeAsSeconds(regionalTimesData[category][distance][type][age]);
           regionalDelta = Number.parseFloat(thisTime) - Number.parseFloat(regionalTime);
           if (regionalDelta < 0) {
             if (!regionalTimesAchieved[type]) {
@@ -369,19 +344,19 @@ export function loadData() {
         cardHtml += `<div>On ${swimmerMapL3Plus[distance][type].date} at ${swimmerMapL3Plus[distance][type].eventName}</div>`;
         cardHtml += "</div>";
 
-        document.getElementById("recorded-times-cards").innerHTML += cardHtml;
+        recordedTimesCards.push(cardHtml);
       }
     }
   }
 
+  document.getElementById("recorded-times-cards").innerHTML = recordedTimesCards.length > 0
+    ? recordedTimesCards.join("")
+    : "No swims found";
+
   if (Object.keys(swimmerMapL4).length !== 0) {
     renderLevel4Times(swimmerMapL4, distances, recordedTypes, eventTimesTypeMap, category, age);
   } else {
-    document.getElementById("recorded-l4-times-cards").innerHTML += "No swims found";
-  }
-
-  if (Object.keys(swimmerMapL3Plus).length === 0) {
-    document.getElementById("recorded-times-cards").innerHTML += "No swims found";
+    document.getElementById("recorded-l4-times-cards").innerHTML = "No swims found";
   }
 
   allDataMap = render2026PBs(swimmerNumber, allDataMap);
@@ -393,12 +368,26 @@ export function loadData() {
   }
 }
 
+/**
+ * Appends a summary paragraph showing total events swum and distance completed.
+ *
+ * @param {number} numberOfEventsSwum - Total number of Level 3+ events the swimmer competed in.
+ * @param {number} totalDistanceCompleted - Total metres swum across all events.
+ * @param {string} swimmerName - The swimmer's first name.
+ */
 function renderSummaryInfo(numberOfEventsSwum, totalDistanceCompleted, swimmerName) {
   document.getElementById("swimmerOutput").innerHTML += `
     <p class="margin-bottom--none">This season, ${swimmerName} has swum in <strong>${numberOfEventsSwum}</strong> Level 3+ events, completing a total distance of <strong>${totalDistanceCompleted}m</strong>.</p>
   `;
 }
 
+/**
+ * Merges previous season (2025) personal bests into the all-data map for comparison display.
+ *
+ * @param {string} swimmerNumber - The swimmer's unique ID.
+ * @param {Object} allDataMap - The current season data map to augment with last year's times.
+ * @returns {Object} The updated allDataMap with lastYear fields populated.
+ */
 function render2026PBs(swimmerNumber, allDataMap) {
   const pbs = get2025Results();
 
@@ -421,6 +410,12 @@ function render2026PBs(swimmerNumber, allDataMap) {
   return allDataMap;
 }
 
+/**
+ * Renders the combined data view showing PBs, county deltas, regional deltas,
+ * and previous season times as event cards.
+ *
+ * @param {Object} allDataMap - Nested map of distance > stroke > {thisYear, lastYear, countyDelta, regionalDelta, points}.
+ */
 function renderAllData(allDataMap) {
   document.getElementById("all-data-table").innerHTML = "";
 
@@ -429,8 +424,6 @@ function renderAllData(allDataMap) {
 
   // Optional: control display order of distances
   const distanceOrder = ["50m", "100m", "200m", "400m"];
-
-  let totalPoints = 0;
 
   const rowsHtml = distanceOrder
     .flatMap((distance) => {
@@ -494,6 +487,16 @@ function renderAllData(allDataMap) {
   document.getElementById("all-data-table").innerHTML = rowsHtml;
 }
 
+/**
+ * Generates a table cell HTML string for a single county target time.
+ *
+ * @param {string} category - The swimmer's category ("Male" or "Female").
+ * @param {string} type - The stroke type (e.g., "Freestyle").
+ * @param {string} age - The swimmer's age.
+ * @param {string} distance - The distance (e.g., "50m").
+ * @param {boolean} achieved - Whether the swimmer has achieved this county time.
+ * @returns {string} HTML string for the table cell.
+ */
 function renderCountyTargetsCell(category, type, age, distance, achieved) {
   if (countyTimesData[category][distance][type][age] === "") {
     return "<td class='not-applicable-cell'>n/a</td>";
@@ -509,9 +512,10 @@ function renderCountyTargetsCell(category, type, age, distance, achieved) {
  * @param {string[]} recordedTypes - An array of stroke types (e.g., "Freestyle", "Backstroke").
  * @param {string} age - The age of the swimmer, used to determine target times.
  * @param {string} category - The category of the swimmer (e.g., "Open/Male", "Female").
+ * @param {Object} timesAchieved - Map of stroke > distance for times that have been achieved.
  */
 function renderCountyTargets(recordedTypes, age, category, timesAchieved) {
-  document.getElementById("county-targets-table").innerHTML = "";
+  let html = "";
   for (const type of recordedTypes) {
     let rowHtml = "<tr>";
     rowHtml += "<td>" + type + "</td>";
@@ -520,10 +524,21 @@ function renderCountyTargets(recordedTypes, age, category, timesAchieved) {
     rowHtml += renderCountyTargetsCell(category, type, age, "200m", timesAchieved[type] && timesAchieved[type]["200m"]);
     rowHtml += renderCountyTargetsCell(category, type, age, "400m", timesAchieved[type] && timesAchieved[type]["400m"]);
     rowHtml += "</tr>";
-    document.getElementById("county-targets-table").innerHTML += rowHtml;
+    html += rowHtml;
   }
+  document.getElementById("county-targets-table").innerHTML = html;
 }
 
+/**
+ * Generates a table cell HTML string for a single regional target time.
+ *
+ * @param {string} category - The swimmer's category ("Male" or "Female").
+ * @param {string} type - The stroke type (e.g., "Freestyle").
+ * @param {string} age - The swimmer's age.
+ * @param {string} distance - The distance (e.g., "50m").
+ * @param {boolean} achieved - Whether the swimmer has achieved this regional time.
+ * @returns {string} HTML string for the table cell.
+ */
 function renderRegionalTargetsCell(category, type, age, distance, achieved) {
   if (
     !regionalTimesData ||
@@ -539,15 +554,16 @@ function renderRegionalTargetsCell(category, type, age, distance, achieved) {
 }
 
 /**
- * Renders a table of county targets for a given set of recorded types, age, and category.
- * Updates the inner HTML of the element with ID "county-targets-table".
+ * Renders a table of regional targets for a given set of recorded types, age, and category.
+ * Updates the inner HTML of the element with ID "regional-targets-table".
  *
  * @param {string[]} recordedTypes - An array of stroke types (e.g., "Freestyle", "Backstroke").
  * @param {string} age - The age of the swimmer, used to determine target times.
  * @param {string} category - The category of the swimmer (e.g., "Open/Male", "Female").
+ * @param {Object} timesAchieved - Map of stroke > distance for times that have been achieved.
  */
 function renderRegionalTargets(recordedTypes, age, category, timesAchieved) {
-  document.getElementById("regional-targets-table").innerHTML = "";
+  let html = "";
   for (const type of recordedTypes) {
     let rowHtml = "<tr>";
     rowHtml += "<td>" + type + "</td>";
@@ -556,31 +572,38 @@ function renderRegionalTargets(recordedTypes, age, category, timesAchieved) {
     rowHtml += renderRegionalTargetsCell(category, type, age, "200m", timesAchieved[type] && timesAchieved[type]["200m"]);
     rowHtml += renderRegionalTargetsCell(category, type, age, "400m", timesAchieved[type] && timesAchieved[type]["400m"]);
     rowHtml += "</tr>";
-    document.getElementById("regional-targets-table").innerHTML += rowHtml;
+    html += rowHtml;
   }
+  document.getElementById("regional-targets-table").innerHTML = html;
 }
 
+/**
+ * Renders Level 4 personal best times as event cards.
+ *
+ * @param {Object} swimmerMapL4 - Best times map for Level 4 events (from buildBestTimesMap).
+ * @param {string[]} distances - Array of distances to iterate (e.g., ["50m", "100m", ...]).
+ * @param {string[]} recordedTypes - Array of stroke types.
+ * @param {Object} eventTimesTypeMap - Map of full stroke names to abbreviated display names.
+ * @param {string} category - The swimmer's category.
+ * @param {string} age - The swimmer's age.
+ */
 function renderLevel4Times(swimmerMapL4, distances, recordedTypes, eventTimesTypeMap, category, age) {
   $("#recorded-l4-times-cards-holder").show();
-  // Render recorded times
+  const cards = [];
   for (const distance of distances) {
     for (const type of recordedTypes) {
       let thisTime = null;
-      let delta;
 
       try {
         thisTime = swimmerMapL4[distance][type].time;
       } catch (e) {
-        // console.log("Nah", e)
         continue;
       }
 
       if (thisTime !== null) {
         const printableTime = thisTime;
 
-        if (thisTime.includes(":")) {
-          thisTime = parseFloat(thisTime.split(":")[0]) * 60 + parseFloat(thisTime.split(":")[1]);
-        }
+        thisTime = getTimeAsSeconds(thisTime);
 
         let cardHtml = "";
         cardHtml += "<div class='event-card'>";
@@ -588,12 +611,16 @@ function renderLevel4Times(swimmerMapL4, distances, recordedTypes, eventTimesTyp
         cardHtml += `<div>On ${swimmerMapL4[distance][type].date} at ${swimmerMapL4[distance][type].eventName}</div>`;
         cardHtml += "</div>";
 
-        document.getElementById("recorded-l4-times-cards").innerHTML += cardHtml;
+        cards.push(cardHtml);
       }
     }
   }
+  document.getElementById("recorded-l4-times-cards").innerHTML = cards.join("");
 }
 
+/**
+ * Validates and saves a manually entered time to localStorage, then refreshes the UI.
+ */
 function saveTime() {
   const type = document.getElementById("type").value;
   const distance = document.getElementById("distance").value;
@@ -610,14 +637,26 @@ function saveTime() {
   }
 }
 
+/**
+ * Converts a swim time string to seconds.
+ *
+ * @param {string} time - Time in format "MM:SS.ss" or "SS.ss".
+ * @returns {number} The time converted to total seconds.
+ */
 function getTimeAsSeconds(time) {
   if (time?.includes(":")) {
     return parseFloat(time.split(":")[0]) * 60 + parseFloat(time.split(":")[1]);
-  } else {
-    return time;
   }
+  return parseFloat(time);
 }
 
+/**
+ * Removes a manually entered time from localStorage and refreshes the UI.
+ *
+ * @param {string} child - The child identifier (currently always "child1").
+ * @param {string} type - The stroke type abbreviation (e.g., "Back", "Free").
+ * @param {string} distance - The distance (e.g., "50m").
+ */
 function deleteTime(child, type, distance) {
   localStorage.removeItem(`child1-event-${type}-${distance}`);
   loadData();
