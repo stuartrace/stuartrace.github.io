@@ -25,7 +25,6 @@ const swimmersSeedMap = new Map([
   ["1803614|Fareed Omotosho|11|Open/Male", ["1803614", "Fareed Omotosho", "11", "Open/Male"]],
   ["1813869|Aliona Rebello|12|Female", ["1813869", "Aliona Rebello", "12", "Female"]],
   ["1281250|Owen Young|7|Open/Male", ["1281250", "Owen Young", "7", "Open/Male"]],
-  ["1625109|Eva Wilcox|14|Female", ["1625109", "Eva Wilcox", "14", "Female"]],
   ["1822118|Samad Omotosho|15|Open/Male", ["1822118", "Samad Omotosho", "15", "Open/Male"]],
   ["1813873|Jessica Smith|15|Female", ["1813873", "Jessica Smith", "15", "Female"]],
   ["1816617|Emmy Morley|15|Female", ["1816617", "Emmy Morley", "15", "Female"]],
