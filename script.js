@@ -349,9 +349,7 @@ export function loadData() {
     }
   }
 
-  document.getElementById("recorded-times-cards").innerHTML = recordedTimesCards.length > 0
-    ? recordedTimesCards.join("")
-    : "No swims found";
+  document.getElementById("recorded-times-cards").innerHTML = recordedTimesCards.length > 0 ? recordedTimesCards.join("") : "No swims found";
 
   if (Object.keys(swimmerMapL4).length !== 0) {
     renderLevel4Times(swimmerMapL4, distances, recordedTypes, eventTimesTypeMap, category, age);
@@ -665,7 +663,7 @@ function renderClubRecords() {
       }
     }
 
-    html += `<div class="sub-title">${gender.label}</div>`;
+    html += `<div class="card"><div class="sub-title">${gender.label} Records 2026</div><div class="club-records-container">`;
 
     for (const age of sortedAges) {
       const rows = [];
@@ -674,8 +672,10 @@ function renderClubRecords() {
           const key = `${distance.replace("m", "")} ${stroke}`;
           if (!records[key] || !records[key][age]) continue;
           const isSelected = records[key][age].name === selectedName;
-          const cellClass = isSelected ? " class=\"highlighted-swimmer\"" : "";
-          rows.push(`<tr><td>${distance.replace("m", "")} ${strokeAbbrev[stroke]}</td><td${cellClass}>${records[key][age].name} (${records[key][age].time})</td></tr>`);
+          const cellClass = isSelected ? ' class="highlighted-swimmer"' : "";
+          rows.push(
+            `<tr><td>${distance.replace("m", "")} ${strokeAbbrev[stroke]}</td><td${cellClass}>${records[key][age].name} (${records[key][age].time})</td></tr>`,
+          );
         }
       }
       if (rows.length === 0) continue;
@@ -685,6 +685,8 @@ function renderClubRecords() {
       html += `<tr><th>Event</th><th>Record</th></tr></thead>`;
       html += `<tbody>${rows.join("")}</tbody></table>`;
     }
+
+    html += `</div></div>`;
   }
 
   document.getElementById("club-records").innerHTML = html;

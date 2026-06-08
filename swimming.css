@@ -308,18 +308,37 @@ tr.not-applicable-row td {
   }
 }
 
+.club-records-container {
+  column-count: 1;
+  column-gap: 20px;
+}
+
+.club-records-container .club-records-table {
+  break-inside: avoid;
+}
+
+@media (min-width: 768px) {
+  .club-records-container {
+    column-count: 2;
+  }
+}
+
+@media (min-width: 1200px) {
+  .club-records-container {
+    column-count: 4;
+  }
+}
+
 .club-records-table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 16px;
-  font-size: 0.85em;
 }
 
 .club-records-table th,
 .club-records-table td {
   border: 1px solid #ddd;
-  padding: 4px 6px;
-  text-align: center;
+  padding: 6px 6px;
 }
 
 .club-records-table thead tr:first-child th {
