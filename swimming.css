@@ -4,6 +4,7 @@
   --background-colour: #fff;
   --background-shaded-colour: #ddd;
   --text-colour: #000;
+  --gold-colour: #d4af37;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -305,4 +306,33 @@ tr.not-applicable-row td {
   .page-title {
     font-size: 7vw;
   }
+}
+
+.club-records-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+  font-size: 0.85em;
+}
+
+.club-records-table th,
+.club-records-table td {
+  border: 1px solid #ddd;
+  padding: 4px 6px;
+  text-align: center;
+}
+
+.club-records-table thead tr:first-child th {
+  background-color: var(--highlight-colour);
+  font-weight: bold;
+}
+
+.club-records-table td:first-child {
+  font-weight: bold;
+  text-align: left;
+}
+
+.highlighted-swimmer {
+  color: var(--gold-colour);
+  font-weight: bold;
 }

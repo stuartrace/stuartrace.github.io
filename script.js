@@ -363,6 +363,7 @@ export function loadData() {
   renderCountyTargets(recordedTypes, age, category, countyTimesAchieved);
   renderRegionalTargets(recordedTypes, age, category, regionalTimesAchieved);
   renderAllData(allDataMap);
+  renderClubRecords();
   if (numberOfEventsSwum > 0) {
     renderSummaryInfo(numberOfEventsSwum, totalDistanceCompleted, name?.split(" ")[0]);
   }
@@ -616,6 +617,77 @@ function renderLevel4Times(swimmerMapL4, distances, recordedTypes, eventTimesTyp
     }
   }
   document.getElementById("recorded-l4-times-cards").innerHTML = cards.join("");
+}
+
+/**
+ * Renders club record tables grouped by gender, showing the fastest time
+ * for each age/stroke/distance combination across all events.
+ */
+function renderClubRecords() {
+  const distances = ["50m", "100m", "200m", "400m"];
+  const strokes = ["Freestyle", "Backstroke", "Breaststroke", "Butterfly", "Individual Medley"];
+  const strokeAbbrev = {
+    Freestyle: "Free",
+    Backstroke: "Back",
+    Breaststroke: "Breast",
+    Butterfly: "Fly",
+    "Individual Medley": "IM",
+  };
+  const genders = [
+    { label: "Male", filter: (cat) => cat !== "Female" },
+    { label: "Female", filter: (cat) => cat === "Female" },
+  ];
+
+  const selectedName = localStorage.getItem("child1-name");
+
+  const ages = new Set();
+  for (const event of results.events) {
+    for (const result of event.results) {
+      ages.add(new Date().getFullYear() - BIRTH_YEAR_OFFSET - Number(result[2]));
+    }
+  }
+  const sortedAges = [...ages].sort((a, b) => a - b);
+
+  let html = "";
+
+  for (const gender of genders) {
+    const records = {};
+
+    for (const event of results.events) {
+      for (const result of event.results) {
+        if (!gender.filter(result[3])) continue;
+        const age = new Date().getFullYear() - BIRTH_YEAR_OFFSET - Number(result[2]);
+        const key = result[5];
+        records[key] ??= {};
+        if (!records[key][age] || getTimeAsSeconds(result[7]) < getTimeAsSeconds(records[key][age].time)) {
+          records[key][age] = { time: result[7], name: result[1] };
+        }
+      }
+    }
+
+    html += `<div class="sub-title">${gender.label}</div>`;
+
+    for (const age of sortedAges) {
+      const rows = [];
+      for (const distance of distances) {
+        for (const stroke of strokes) {
+          const key = `${distance.replace("m", "")} ${stroke}`;
+          if (!records[key] || !records[key][age]) continue;
+          const isSelected = records[key][age].name === selectedName;
+          const cellClass = isSelected ? " class=\"highlighted-swimmer\"" : "";
+          rows.push(`<tr><td>${distance.replace("m", "")} ${strokeAbbrev[stroke]}</td><td${cellClass}>${records[key][age].name} (${records[key][age].time})</td></tr>`);
+        }
+      }
+      if (rows.length === 0) continue;
+
+      html += `<table class="club-records-table">`;
+      html += `<thead><tr><th colspan="2">Age ${age}</th></tr>`;
+      html += `<tr><th>Event</th><th>Record</th></tr></thead>`;
+      html += `<tbody>${rows.join("")}</tbody></table>`;
+    }
+  }
+
+  document.getElementById("club-records").innerHTML = html;
 }
 
 /**
