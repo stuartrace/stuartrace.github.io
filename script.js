@@ -67,9 +67,12 @@ export function changeSwimmer() {
   const thisSwimmer = uniqueSwimmers.find((s) => s.ID === swimmerId);
   const category = thisSwimmer.category === "Female" ? "Female" : "Male";
   const today = new Date();
-  let childAge = today.getFullYear() - BIRTH_YEAR_OFFSET - thisSwimmer.yearOfBirth;
-  if (childAge > 17) {
-    childAge = 17;
+  let childAge = 18;
+  if (thisSwimmer.yearOfBirth < today.getFullYear().toString().slice(-2)) {
+    childAge = today.getFullYear() - BIRTH_YEAR_OFFSET - thisSwimmer.yearOfBirth;
+    if (childAge > 17) {
+      childAge = 17;
+    }
   }
   writeSwimmerToLocalStorage(childAge, thisSwimmer.name, category, thisSwimmer.ID);
   showSwimmerDetailsInBoxes(childAge, thisSwimmer?.name, thisSwimmer?.ID);
@@ -641,7 +644,11 @@ function renderClubRecords() {
   const ages = new Set();
   for (const event of results.events) {
     for (const result of event.results) {
-      ages.add(new Date().getFullYear() - BIRTH_YEAR_OFFSET - Number(result[2]));
+      if (Number(result[2] < new Date().getFullYear().toString().slice(-2))) {
+        ages.add(new Date().getFullYear() - BIRTH_YEAR_OFFSET - Number(result[2]));
+      } else {
+        ages.add(18);
+      }
     }
   }
   const sortedAges = [...ages].sort((a, b) => a - b);
@@ -654,7 +661,10 @@ function renderClubRecords() {
     for (const event of results.events) {
       for (const result of event.results) {
         if (!gender.filter(result[3])) continue;
-        const age = new Date().getFullYear() - BIRTH_YEAR_OFFSET - Number(result[2]);
+        let age = 18;
+        if (Number(result[2] < new Date().getFullYear().toString().slice(-2))) {
+          age = new Date().getFullYear() - BIRTH_YEAR_OFFSET - Number(result[2]);
+        }
         const key = result[5];
         records[key] ??= {};
         if (!records[key][age] || getTimeAsSeconds(result[7]) < getTimeAsSeconds(records[key][age].time)) {
