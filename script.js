@@ -102,11 +102,13 @@ function writeSwimmerToLocalStorage(age, name, category, id) {
  * @param {string} name - The swimmer's full name.
  * @param {string} id - The swimmer's unique ID.
  */
-function showSwimmerDetailsInBoxes(age, name, id) {
+function showSwimmerDetailsInBoxes(age, name, id, qualifiedCount) {
+  const firstName = name.split(" ")[0];
+  const qualifiedText = qualifiedCount != null && qualifiedCount > 0 ? ` ${firstName} is currently qualified for ${qualifiedCount} event${qualifiedCount !== 1 ? "s" : ""} in the 2027 counties.` : "";
   $("#swimmerOutput").empty();
   $("#swimmerOutput").append(`
   <p class="margin-bottom--none">
-    ${name} (<a href="https://www.swimmingresults.org/individualbest/personal_best.php?mode=A&tiref=${id}" target="_blank" rel="noopener">${id}</a>) is swimming as a ${age} year old in the next counties.
+    ${name} (<a href="https://www.swimmingresults.org/individualbest/personal_best.php?mode=A&tiref=${id}" target="_blank" rel="noopener">${id}</a>) is swimming as a ${age} year old in the next counties.${qualifiedText}
   </p>
 `);
 }
@@ -219,8 +221,6 @@ export function loadData() {
 
   document.getElementById("output").innerHTML = "";
   document.getElementById("enter-times-row").style.display = "block";
-  showSwimmerDetailsInBoxes(age, name, swimmerNumber);
-
   const distances = ["50m", "100m", "200m", "400m"];
   const personalTypes = ["Back", "Breast", "Butterfly", "Free", "IM"];
   const recordedTypes = ["Backstroke", "Breaststroke", "Butterfly", "Freestyle", "Individual Medley"];
@@ -353,6 +353,9 @@ export function loadData() {
   }
 
   document.getElementById("recorded-times-cards").innerHTML = recordedTimesCards.length > 0 ? recordedTimesCards.join("") : "No swims found";
+
+  const qualifiedCount = Object.values(countyTimesAchieved).reduce((sum, distances) => sum + Object.keys(distances).length, 0);
+  showSwimmerDetailsInBoxes(age, name, swimmerNumber, qualifiedCount);
 
   if (Object.keys(swimmerMapL4).length !== 0) {
     renderLevel4Times(swimmerMapL4, distances, recordedTypes, eventTimesTypeMap, category, age);
@@ -604,12 +607,19 @@ function renderLevel4Times(swimmerMapL4, distances, recordedTypes, eventTimesTyp
 
       if (thisTime !== null) {
         const printableTime = thisTime;
-
         thisTime = getTimeAsSeconds(thisTime);
 
-        let cardHtml = "";
-        cardHtml += "<div class='event-card'>";
-        cardHtml += `<div class='event-card-top-row'><div class='event-title'>${distance} ${eventTimesTypeMap[type]}</div><div></div><div class="time-cell">${printableTime}</div></div>`;
+        let deltaHtml = "";
+        try {
+          const countyTime = getTimeAsSeconds(countyTimesData[category][distance][type][age]);
+          const delta = Number.parseFloat(thisTime) - Number.parseFloat(countyTime);
+          deltaHtml = `<div class="time-cell ${isNaN(delta) || delta > 0 ? "negative-delta" : "positive-delta"}">${isNaN(delta) ? "n/a" : delta.toFixed(2)}</div>`;
+        } catch (e) {
+          deltaHtml = `<div class="time-cell"></div>`;
+        }
+
+        let cardHtml = "<div class='event-card'>";
+        cardHtml += `<div class='event-card-top-row'><div class='event-title'>${distance} ${eventTimesTypeMap[type]}</div><div class="time-cell">${printableTime}</div>${deltaHtml}</div>`;
         cardHtml += `<div>On ${swimmerMapL4[distance][type].date} at ${swimmerMapL4[distance][type].eventName}</div>`;
         cardHtml += "</div>";
 
