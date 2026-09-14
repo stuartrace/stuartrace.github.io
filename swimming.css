@@ -191,15 +191,31 @@ div.time-cell {
 }
 
 tr td.positive-delta,
-div.positive-delta {
+div.positive-delta,
+span.positive-delta {
   background-color: green;
   color: white;
 }
 
+tr td.amber-delta,
+div.amber-delta,
+span.amber-delta {
+  background-color: #e07b00;
+  color: white;
+}
+
 tr td.negative-delta,
-div.negative-delta {
+div.negative-delta,
+span.negative-delta {
   background-color: #c90101;
   color: white;
+}
+
+.key-badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 4px;
+  font-size: 0.85em;
 }
 
 .delete-cross {

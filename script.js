@@ -142,6 +142,21 @@ export function lookupSwimmer() {
 }
 
 /**
+ * Returns the CSS class for a delta value relative to a county time.
+ * Green if under, amber if within 5%, red otherwise.
+ *
+ * @param {number} delta - Difference in seconds (swimmer time minus county time).
+ * @param {number} countyTime - The county standard time in seconds.
+ * @returns {string} CSS class name.
+ */
+function deltaClass(delta, countyTime) {
+  if (isNaN(delta) || delta > 0) {
+    return delta / countyTime <= 0.03 ? "amber-delta" : "negative-delta";
+  }
+  return "positive-delta";
+}
+
+/**
  * Builds a nested map of personal best times for a swimmer across a set of events.
  *
  * @param {Array<{eventName: string, date: string, results: string[][]}>} events - Events to search through.
@@ -257,7 +272,7 @@ export function loadData() {
           rowHtml += `<td class="time-cell">${countyTime}</td>`;
           countyTime = getTimeAsSeconds(countyTime);
           const delta = Number.parseFloat(thisTime) - Number.parseFloat(countyTime);
-          rowHtml += `<td class="time-cell ${isNaN(delta) || delta > 0 ? "negative-delta" : "positive-delta"}">${
+          rowHtml += `<td class="time-cell ${deltaClass(delta, countyTime)}">${
             isNaN(delta) ? "n/a" : delta.toFixed(2)
           }</td><td class="delete-cross" onClick="deleteTime('child1', '${type}', '${distance}')">X</td>`;
         } catch (err) {
@@ -294,6 +309,7 @@ export function loadData() {
       let thisTime = null;
       let countyDelta;
       let regionalDelta;
+      let countyTime;
 
       try {
         thisTime = swimmerMapL3Plus[distance][type].time;
@@ -310,7 +326,7 @@ export function loadData() {
 
         thisTime = getTimeAsSeconds(thisTime);
         try {
-          let countyTime = getTimeAsSeconds(countyTimesData[category][distance][type][age]);
+          countyTime = getTimeAsSeconds(countyTimesData[category][distance][type][age]);
           countyDelta = Number.parseFloat(thisTime) - Number.parseFloat(countyTime);
           if (countyDelta < 0) {
             if (!countyTimesAchieved[type]) {
@@ -343,7 +359,7 @@ export function loadData() {
         cardHtml += `<div class='event-card-top-row'><div class='event-title'>${distance} ${
           eventTimesTypeMap[type]
         }</div><div class="time-cell">${printableTime}</div> <div class="time-cell ${
-          countyDelta > 0 ? "negative-delta" : "positive-delta"
+          deltaClass(countyDelta, countyTime)
         }">${countyDelta.toFixed(2)}</div></div>`;
         cardHtml += `<div>On ${swimmerMapL3Plus[distance][type].date} at ${swimmerMapL3Plus[distance][type].eventName}</div>`;
         cardHtml += "</div>";
@@ -365,8 +381,8 @@ export function loadData() {
   }
 
   allDataMap = render2026PBs(swimmerNumber, allDataMap);
-  renderCountyTargets(recordedTypes, age, category, countyTimesAchieved);
-  renderRegionalTargets(recordedTypes, age, category, regionalTimesAchieved);
+  renderCountyTargets(recordedTypes, age, category, countyTimesAchieved, swimmerMapL3Plus);
+  renderRegionalTargets(recordedTypes, age, category, regionalTimesAchieved, swimmerMapL3Plus);
   renderAllData(allDataMap);
   renderClubRecords();
   if (numberOfEventsSwum > 0) {
@@ -384,6 +400,11 @@ export function loadData() {
 function renderSummaryInfo(numberOfEventsSwum, totalDistanceCompleted, swimmerName) {
   document.getElementById("swimmerOutput").innerHTML += `
     <p class="margin-bottom--none">This season, ${swimmerName} has swum in <strong>${numberOfEventsSwum}</strong> Level 3+ events, completing a total distance of <strong>${totalDistanceCompleted}m</strong>.</p>
+    <p class="margin-bottom--none">
+      <span class="positive-delta key-badge">Green</span> = qualified &nbsp;
+      <span class="amber-delta key-badge">Amber</span> = within 3% &nbsp;
+      <span class="negative-delta key-badge">Red</span> = not qualified
+    </p>
   `;
 }
 
@@ -503,12 +524,17 @@ function renderAllData(allDataMap) {
  * @param {boolean} achieved - Whether the swimmer has achieved this county time.
  * @returns {string} HTML string for the table cell.
  */
-function renderCountyTargetsCell(category, type, age, distance, achieved) {
+function renderCountyTargetsCell(category, type, age, distance, achieved, swimmerMap) {
   if (countyTimesData[category][distance][type][age] === "") {
     return "<td class='not-applicable-cell'>n/a</td>";
-  } else {
-    return `<td class='center ${achieved ? "positive-delta" : "negative-delta"}'>${countyTimesData[category][distance][type][age]}</td>`;
   }
+  if (!achieved) {
+    const swimmerTime = getTimeAsSeconds(swimmerMap?.[distance]?.[type]?.time);
+    const countyTime = getTimeAsSeconds(countyTimesData[category][distance][type][age]);
+    const delta = Number.parseFloat(swimmerTime) - Number.parseFloat(countyTime);
+    return `<td class='center ${deltaClass(delta, countyTime)}'>${countyTimesData[category][distance][type][age]}</td>`;
+  }
+  return `<td class='center positive-delta'>${countyTimesData[category][distance][type][age]}</td>`;
 }
 
 /**
@@ -520,15 +546,15 @@ function renderCountyTargetsCell(category, type, age, distance, achieved) {
  * @param {string} category - The category of the swimmer (e.g., "Open/Male", "Female").
  * @param {Object} timesAchieved - Map of stroke > distance for times that have been achieved.
  */
-function renderCountyTargets(recordedTypes, age, category, timesAchieved) {
+function renderCountyTargets(recordedTypes, age, category, timesAchieved, swimmerMap) {
   let html = "";
   for (const type of recordedTypes) {
     let rowHtml = "<tr>";
     rowHtml += "<td>" + type + "</td>";
-    rowHtml += renderCountyTargetsCell(category, type, age, "50m", timesAchieved[type] && timesAchieved[type]["50m"]);
-    rowHtml += renderCountyTargetsCell(category, type, age, "100m", timesAchieved[type] && timesAchieved[type]["100m"]);
-    rowHtml += renderCountyTargetsCell(category, type, age, "200m", timesAchieved[type] && timesAchieved[type]["200m"]);
-    rowHtml += renderCountyTargetsCell(category, type, age, "400m", timesAchieved[type] && timesAchieved[type]["400m"]);
+    rowHtml += renderCountyTargetsCell(category, type, age, "50m", timesAchieved[type] && timesAchieved[type]["50m"], swimmerMap);
+    rowHtml += renderCountyTargetsCell(category, type, age, "100m", timesAchieved[type] && timesAchieved[type]["100m"], swimmerMap);
+    rowHtml += renderCountyTargetsCell(category, type, age, "200m", timesAchieved[type] && timesAchieved[type]["200m"], swimmerMap);
+    rowHtml += renderCountyTargetsCell(category, type, age, "400m", timesAchieved[type] && timesAchieved[type]["400m"], swimmerMap);
     rowHtml += "</tr>";
     html += rowHtml;
   }
@@ -545,7 +571,7 @@ function renderCountyTargets(recordedTypes, age, category, timesAchieved) {
  * @param {boolean} achieved - Whether the swimmer has achieved this regional time.
  * @returns {string} HTML string for the table cell.
  */
-function renderRegionalTargetsCell(category, type, age, distance, achieved) {
+function renderRegionalTargetsCell(category, type, age, distance, achieved, swimmerMap) {
   if (
     !regionalTimesData ||
     !regionalTimesData[category] ||
@@ -554,9 +580,14 @@ function renderRegionalTargetsCell(category, type, age, distance, achieved) {
     regionalTimesData[category][distance][type][age] === ""
   ) {
     return "<td class='not-applicable-cell'>n/a</td>";
-  } else {
-    return `<td class='center ${achieved ? "positive-delta" : "negative-delta"}'>${regionalTimesData[category][distance][type][age]}</td>`;
   }
+  if (!achieved) {
+    const swimmerTime = getTimeAsSeconds(swimmerMap?.[distance]?.[type]?.time);
+    const regionalTime = getTimeAsSeconds(regionalTimesData[category][distance][type][age]);
+    const delta = Number.parseFloat(swimmerTime) - Number.parseFloat(regionalTime);
+    return `<td class='center ${deltaClass(delta, regionalTime)}'>${regionalTimesData[category][distance][type][age]}</td>`;
+  }
+  return `<td class='center positive-delta'>${regionalTimesData[category][distance][type][age]}</td>`;
 }
 
 /**
@@ -568,15 +599,15 @@ function renderRegionalTargetsCell(category, type, age, distance, achieved) {
  * @param {string} category - The category of the swimmer (e.g., "Open/Male", "Female").
  * @param {Object} timesAchieved - Map of stroke > distance for times that have been achieved.
  */
-function renderRegionalTargets(recordedTypes, age, category, timesAchieved) {
+function renderRegionalTargets(recordedTypes, age, category, timesAchieved, swimmerMap) {
   let html = "";
   for (const type of recordedTypes) {
     let rowHtml = "<tr>";
     rowHtml += "<td>" + type + "</td>";
-    rowHtml += renderRegionalTargetsCell(category, type, age, "50m", timesAchieved[type] && timesAchieved[type]["50m"]);
-    rowHtml += renderRegionalTargetsCell(category, type, age, "100m", timesAchieved[type] && timesAchieved[type]["100m"]);
-    rowHtml += renderRegionalTargetsCell(category, type, age, "200m", timesAchieved[type] && timesAchieved[type]["200m"]);
-    rowHtml += renderRegionalTargetsCell(category, type, age, "400m", timesAchieved[type] && timesAchieved[type]["400m"]);
+    rowHtml += renderRegionalTargetsCell(category, type, age, "50m", timesAchieved[type] && timesAchieved[type]["50m"], swimmerMap);
+    rowHtml += renderRegionalTargetsCell(category, type, age, "100m", timesAchieved[type] && timesAchieved[type]["100m"], swimmerMap);
+    rowHtml += renderRegionalTargetsCell(category, type, age, "200m", timesAchieved[type] && timesAchieved[type]["200m"], swimmerMap);
+    rowHtml += renderRegionalTargetsCell(category, type, age, "400m", timesAchieved[type] && timesAchieved[type]["400m"], swimmerMap);
     rowHtml += "</tr>";
     html += rowHtml;
   }
@@ -614,7 +645,7 @@ function renderLevel4Times(swimmerMapL4, distances, recordedTypes, eventTimesTyp
         try {
           const countyTime = getTimeAsSeconds(countyTimesData[category][distance][type][age]);
           const delta = Number.parseFloat(thisTime) - Number.parseFloat(countyTime);
-          deltaHtml = `<div class="time-cell ${isNaN(delta) || delta > 0 ? "negative-delta" : "positive-delta"}">${isNaN(delta) ? "n/a" : delta.toFixed(2)}</div>`;
+          deltaHtml = `<div class="time-cell ${deltaClass(delta, countyTime)}">${isNaN(delta) ? "n/a" : delta.toFixed(2)}</div>`;
         } catch (e) {
           deltaHtml = `<div class="time-cell"></div>`;
         }
