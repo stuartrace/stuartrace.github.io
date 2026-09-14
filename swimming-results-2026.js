@@ -690,6 +690,32 @@ export function getResults() {
           ["10111", "Dale Barker", "62", "Open/Male", "Felixstowe", "50 Backstroke", "F", "0:38.10", ""],
         ],
       },
+      {
+        eventName: "Stowmarket Novice",
+        date: "12th Sept",
+        level: "4",
+        results: [
+          ["1822118", "Samad Omotosho", "15", "Open/Male", "Felixstowe", "50 Freestyle", "F", "38.14", "142"],
+          ["1822118", "Samad Omotosho", "15", "Open/Male", "Felixstowe", "50 Breaststroke", "F", "56.24", "87"],
+          ["1822118", "Samad Omotosho", "15", "Open/Male", "Felixstowe", "50 Butterfly", "F", "44.67", "108"],
+          ["1822118", "Samad Omotosho", "15", "Open/Male", "Felixstowe", "50 Backstroke", "F", "51.18", "80"],
+          ["1742684", "Ivy-Rose Clark", "13", "Female", "Felixstowe", "50 Freestyle", "F", "35.35", "269"],
+          ["1816617", "Emmy Morley", "15", "Female", "Felixstowe", "50 Freestyle", "F", "47.31", "112"],
+          ["1761786", "Fearne Hands", "15", "Female", "Felixstowe", "50 Freestyle", "F", "48.99", "101"],
+          ["1866224", "Molly Grimwood", "16", "Female", "Felixstowe", "50 Freestyle", "F", "53.48", "77"],
+          ["1707523", "Ayla-Rue Filby", "17", "Female", "Felixstowe", "50 Freestyle", "F", "53.59", "77"],
+          ["1742684", "Ivy-Rose Clark", "13", "Female", "Felixstowe", "50 Breaststroke", "F", "47.63", "211"],
+          ["1761786", "Fearne Hands", "15", "Female", "Felixstowe", "50 Breaststroke", "F", "57.2", "122"],
+          ["1816617", "Emmy Morley", "15", "Female", "Felixstowe", "50 Breaststroke", "F", "59.29", "109"],
+          ["1866224", "Molly Grimwood", "16", "Female", "Felixstowe", "50 Breaststroke", "F", "01:08.4", "71"],
+          ["1816617", "Emmy Morley", "15", "Female", "Felixstowe", "50 Butterfly", "F", "56.81", "74"],
+          ["1761786", "Fearne Hands", "15", "Female", "Felixstowe", "50 Butterfly", "F", "58.73", "67"],
+          ["1742684", "Ivy-Rose Clark", "13", "Female", "Felixstowe", "50 Backstroke", "F", "38.42", "283"],
+          ["1816617", "Emmy Morley", "15", "Female", "Felixstowe", "50 Backstroke", "F", "47.8", "147"],
+          ["1761786", "Fearne Hands", "15", "Female", "Felixstowe", "50 Backstroke", "F", "52.05", "113"],
+          ["1707523", "Ayla-Rue Filby", "17", "Female", "Felixstowe", "50 Backstroke", "F", "54.77", "97"]
+        ],
+      },
     ],
   };
 }

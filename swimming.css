@@ -266,6 +266,11 @@ tr.not-applicable-row td {
     display: grid;
     grid-template-columns: 33% 33% auto;
   }
+
+  #recorded-l4-times-cards {
+    display: grid;
+    grid-template-columns: 33% 33% auto;
+  }
 }
 
 @media only screen and (max-width: 600px) {
@@ -275,6 +280,11 @@ tr.not-applicable-row td {
   }
 
   #recorded-times-cards {
+    display: grid;
+    grid-template-columns: 100%;
+  }
+
+  #recorded-l4-times-cards {
     display: grid;
     grid-template-columns: 100%;
   }
