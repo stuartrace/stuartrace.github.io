@@ -105,11 +105,12 @@ function writeSwimmerToLocalStorage(age, name, category, id) {
  */
 function showSwimmerDetailsInBoxes(age, name, id, qualifiedCount) {
   const firstName = name.split(" ")[0];
+  const displayAge = Number(age) >= 17 ? "17+" : age;
   const qualifiedText = qualifiedCount != null && qualifiedCount > 0 ? ` ${firstName} is currently qualified for ${qualifiedCount} event${qualifiedCount !== 1 ? "s" : ""} in the 2027 counties.` : "";
   $("#swimmerOutput").empty();
   $("#swimmerOutput").append(`
   <p class="margin-bottom--none">
-    ${name} (<a href="https://www.swimmingresults.org/individualbest/personal_best.php?mode=A&tiref=${id}" target="_blank" rel="noopener">${id}</a>) is swimming as a ${age} year old in the next counties.${qualifiedText}
+    ${name} (<a href="https://www.swimmingresults.org/individualbest/personal_best.php?mode=A&tiref=${id}" target="_blank" rel="noopener">${id}</a>) is swimming as a ${displayAge} year old in the next counties.${qualifiedText}
   </p>
 `);
 }
@@ -212,7 +213,7 @@ export function loadData() {
 
   const swimmersEvents = results.events.filter((event) => event.results.some((result) => result[0] === swimmerNumber));
 
-  const age = localStorage.getItem("child1-age");
+  const age = Math.min(Number(localStorage.getItem("child1-age")), 17);
   const name = localStorage.getItem("child1-name");
   const category = localStorage.getItem("child1-category");
 
