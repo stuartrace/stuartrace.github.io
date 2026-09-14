@@ -381,3 +381,58 @@ tr.not-applicable-row td {
   color: var(--gold-colour);
   font-weight: bold;
 }
+
+.swimmer-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 0 4px;
+}
+
+.swimmer-card-name {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.swimmer-card-name span {
+  font-size: 1.4em;
+  font-weight: bold;
+}
+
+.swimmer-card-id {
+  font-size: 0.85em;
+  color: #888;
+}
+
+.swimmer-card-stats {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.swimmer-card-stat {
+  background: #f4f4f4;
+  border-radius: 8px;
+  padding: 8px 14px;
+  text-align: center;
+  min-width: 80px;
+  color: #111;
+}
+
+.swimmer-card-stat-value {
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+.swimmer-card-stat-label {
+  font-size: 0.75em;
+  color: #666;
+  margin-top: 2px;
+}
+
+.swimmer-card-key {
+  font-size: 0.85em;
+  color: var(--text-colour);
+}

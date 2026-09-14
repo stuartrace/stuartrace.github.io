@@ -103,16 +103,32 @@ function writeSwimmerToLocalStorage(age, name, category, id) {
  * @param {string} name - The swimmer's full name.
  * @param {string} id - The swimmer's unique ID.
  */
-function showSwimmerDetailsInBoxes(age, name, id, qualifiedCount) {
-  const firstName = name.split(" ")[0];
+function showSwimmerDetailsInBoxes(age, name, id, qualifiedCount, numberOfEventsSwum, totalDistanceCompleted) {
   const displayAge = Number(age) >= 17 ? "17+" : age;
-  const qualifiedText = qualifiedCount != null && qualifiedCount > 0 ? ` ${firstName} is currently qualified for ${qualifiedCount} event${qualifiedCount !== 1 ? "s" : ""} in the 2027 counties.` : "";
-  $("#swimmerOutput").empty();
-  $("#swimmerOutput").append(`
-  <p class="margin-bottom--none">
-    ${name} (<a href="https://www.swimmingresults.org/individualbest/personal_best.php?mode=A&tiref=${id}" target="_blank" rel="noopener">${id}</a>) is swimming as a ${displayAge} year old in the next counties.${qualifiedText}
-  </p>
-`);
+  const qualifiedStat = qualifiedCount != null && qualifiedCount > 0
+    ? `<div class="swimmer-card-stat"><div class="swimmer-card-stat-value">${qualifiedCount} event${qualifiedCount !== 1 ? "s" : ""} qualified</div><div class="swimmer-card-stat-label">2027 counties</div></div>`
+    : "";
+  const eventsText = numberOfEventsSwum != null ? `${numberOfEventsSwum} event${numberOfEventsSwum !== 1 ? "s" : ""} swum` : "—";
+  const distanceText = totalDistanceCompleted != null ? `${totalDistanceCompleted}m total` : "—";
+  $("#swimmerOutput").html(`
+    <div class="swimmer-card">
+      <div class="swimmer-card-name">
+        <span>${name}</span>
+        <a class="swimmer-card-id" href="https://www.swimmingresults.org/individualbest/personal_best.php?mode=A&tiref=${id}" target="_blank" rel="noopener">${id}</a>
+      </div>
+      <div class="swimmer-card-stats">
+        <div class="swimmer-card-stat"><div class="swimmer-card-stat-value">${displayAge}</div><div class="swimmer-card-stat-label">Age group</div></div>
+        ${qualifiedStat}
+        <div class="swimmer-card-stat"><div class="swimmer-card-stat-value">${eventsText}</div><div class="swimmer-card-stat-label">This season</div></div>
+        <div class="swimmer-card-stat"><div class="swimmer-card-stat-value">${distanceText}</div><div class="swimmer-card-stat-label">Distance</div></div>
+      </div>
+      <div class="swimmer-card-key">
+        <span class="positive-delta key-badge">Green</span> = qualified &nbsp;
+        <span class="amber-delta key-badge">Amber</span> = within 3% &nbsp;
+        <span class="negative-delta key-badge">Red</span> = not qualified
+      </div>
+    </div>
+  `);
 }
 
 /**
@@ -373,7 +389,7 @@ export function loadData() {
   document.getElementById("recorded-times-cards").innerHTML = recordedTimesCards.length > 0 ? recordedTimesCards.join("") : "No swims found";
 
   const qualifiedCount = Object.values(countyTimesAchieved).reduce((sum, distances) => sum + Object.keys(distances).length, 0);
-  showSwimmerDetailsInBoxes(age, name, swimmerNumber, qualifiedCount);
+  showSwimmerDetailsInBoxes(age, name, swimmerNumber, qualifiedCount, numberOfEventsSwum, totalDistanceCompleted);
 
   if (Object.keys(swimmerMapL4).length !== 0) {
     renderLevel4Times(swimmerMapL4, distances, recordedTypes, eventTimesTypeMap, category, age);
@@ -386,28 +402,10 @@ export function loadData() {
   renderRegionalTargets(recordedTypes, age, category, regionalTimesAchieved, swimmerMapL3Plus);
   renderAllData(allDataMap);
   renderClubRecords();
-  if (numberOfEventsSwum > 0) {
-    renderSummaryInfo(numberOfEventsSwum, totalDistanceCompleted, name?.split(" ")[0]);
-  }
 }
 
 /**
  * Appends a summary paragraph showing total events swum and distance completed.
- *
- * @param {number} numberOfEventsSwum - Total number of Level 3+ events the swimmer competed in.
- * @param {number} totalDistanceCompleted - Total metres swum across all events.
- * @param {string} swimmerName - The swimmer's first name.
- */
-function renderSummaryInfo(numberOfEventsSwum, totalDistanceCompleted, swimmerName) {
-  document.getElementById("swimmerOutput").innerHTML += `
-    <p class="margin-bottom--none">This season, ${swimmerName} has swum in <strong>${numberOfEventsSwum}</strong> Level 3+ events, completing a total distance of <strong>${totalDistanceCompleted}m</strong>.</p>
-    <p class="margin-bottom--none">
-      <span class="positive-delta key-badge">Green</span> = qualified &nbsp;
-      <span class="amber-delta key-badge">Amber</span> = within 3% &nbsp;
-      <span class="negative-delta key-badge">Red</span> = not qualified
-    </p>
-  `;
-}
 
 /**
  * Merges previous season (2025) personal bests into the all-data map for comparison display.
