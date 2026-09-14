@@ -76,6 +76,7 @@ export function changeSwimmer() {
   }
   writeSwimmerToLocalStorage(childAge, thisSwimmer.name, category, thisSwimmer.ID);
   showSwimmerDetailsInBoxes(childAge, thisSwimmer?.name, thisSwimmer?.ID);
+  history.replaceState(null, "", `?swimmer=${thisSwimmer.ID}`);
 
   loadData();
 }
@@ -756,6 +757,10 @@ function deleteTime(child, type, distance) {
   loadData();
 }
 
+const urlSwimmerId = new URLSearchParams(window.location.search).get("swimmer");
+if (urlSwimmerId) {
+  localStorage.setItem("child1-swimmer-number", urlSwimmerId);
+}
 loadData();
 window.saveTime = saveTime;
 window.deleteTime = deleteTime;
