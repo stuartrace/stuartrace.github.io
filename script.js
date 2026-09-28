@@ -76,7 +76,11 @@ export function changeSwimmer() {
   }
   writeSwimmerToLocalStorage(childAge, thisSwimmer.name, category, thisSwimmer.ID);
   showSwimmerDetailsInBoxes(childAge, thisSwimmer?.name, thisSwimmer?.ID);
-  history.replaceState(null, "", `?swimmer=${thisSwimmer.ID}`);
+  try {
+    history.replaceState(null, "", `?swimmer=${thisSwimmer.ID}`);
+  } catch (e) {
+    console.warn("Could not update URL:", e);
+  }
 
   loadData();
 }
@@ -105,9 +109,10 @@ function writeSwimmerToLocalStorage(age, name, category, id) {
  */
 function showSwimmerDetailsInBoxes(age, name, id, qualifiedCount, numberOfEventsSwum, totalDistanceCompleted) {
   const displayAge = Number(age) >= 17 ? "17+" : age;
-  const qualifiedStat = qualifiedCount != null && qualifiedCount > 0
-    ? `<div class="swimmer-card-stat"><div class="swimmer-card-stat-value">${qualifiedCount} event${qualifiedCount !== 1 ? "s" : ""} qualified</div><div class="swimmer-card-stat-label">2027 counties</div></div>`
-    : "";
+  const qualifiedStat =
+    qualifiedCount != null && qualifiedCount > 0
+      ? `<div class="swimmer-card-stat"><div class="swimmer-card-stat-value">${qualifiedCount} event${qualifiedCount !== 1 ? "s" : ""} qualified</div><div class="swimmer-card-stat-label">2027 counties</div></div>`
+      : "";
   const eventsText = numberOfEventsSwum != null ? `${numberOfEventsSwum} event${numberOfEventsSwum !== 1 ? "s" : ""} swum` : "—";
   const distanceText = totalDistanceCompleted != null ? `${totalDistanceCompleted}m total` : "—";
   $("#swimmerOutput").html(`
@@ -367,17 +372,18 @@ export function loadData() {
             regionalTimesAchieved[type][distance] = {};
           }
           allDataMap[distance][type].regionalDelta = regionalDelta.toFixed(2);
-        } catch (err) {
-          console.log("err", err);
+        } catch {
+          // no regional time for this event
         }
 
         let cardHtml = "";
         cardHtml += `<div class='event-card ${countyDelta < 0 ? "qualified" : ""}'>`;
         cardHtml += `<div class='event-card-top-row'><div class='event-title'>${distance} ${
           eventTimesTypeMap[type]
-        }</div><div class="time-cell">${printableTime}</div> <div class="time-cell ${
-          deltaClass(countyDelta, countyTime)
-        }">${countyDelta.toFixed(2)}</div></div>`;
+        }</div><div class="time-cell">${printableTime}</div> <div class="time-cell ${deltaClass(
+          countyDelta,
+          countyTime,
+        )}">${countyDelta.toFixed(2)}</div></div>`;
         cardHtml += `<div>On ${swimmerMapL3Plus[distance][type].date} at ${swimmerMapL3Plus[distance][type].eventName}</div>`;
         cardHtml += "</div>";
 
