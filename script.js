@@ -76,11 +76,11 @@ export function changeSwimmer() {
   }
   writeSwimmerToLocalStorage(childAge, thisSwimmer.name, category, thisSwimmer.ID);
   showSwimmerDetailsInBoxes(childAge, thisSwimmer?.name, thisSwimmer?.ID);
-  try {
-    history.replaceState(null, "", `?swimmer=${thisSwimmer.ID}`);
-  } catch (e) {
-    console.warn("Could not update URL:", e);
-  }
+  //try {
+  //  history.replaceState(null, "", `?swimmer=${thisSwimmer.ID}`);
+  //} catch (e) {
+  //  console.warn("Could not update URL:", e);
+  //}
 
   loadData();
 }
