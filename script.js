@@ -74,13 +74,13 @@ export function changeSwimmer() {
       childAge = 17;
     }
   }
-  writeSwimmerToLocalStorage(childAge, thisSwimmer.name, category, thisSwimmer.ID);
+  writeSwimmerToLocalStorage(childAge, thisSwimmer?.name, category, thisSwimmer?.ID);
   showSwimmerDetailsInBoxes(childAge, thisSwimmer?.name, thisSwimmer?.ID);
-  //try {
-  //  history.replaceState(null, "", `?swimmer=${thisSwimmer.ID}`);
-  //} catch (e) {
-  //  console.warn("Could not update URL:", e);
-  //}
+  try {
+    history.replaceState(null, "", `?swimmer=${thisSwimmer?.ID}`);
+  } catch (e) {
+    console.warn("Could not update URL:", e);
+  }
 
   loadData();
 }
@@ -395,7 +395,8 @@ export function loadData() {
   document.getElementById("recorded-times-cards").innerHTML = recordedTimesCards.length > 0 ? recordedTimesCards.join("") : "No swims found";
 
   const qualifiedCount = Object.values(countyTimesAchieved).reduce((sum, distances) => sum + Object.keys(distances).length, 0);
-  showSwimmerDetailsInBoxes(age, name, swimmerNumber, qualifiedCount, numberOfEventsSwum, totalDistanceCompleted);
+  const l4EventsSwum = Object.values(swimmerMapL4).reduce((sum, types) => sum + Object.keys(types).length, 0);
+  showSwimmerDetailsInBoxes(age, name, swimmerNumber, qualifiedCount, numberOfEventsSwum + l4EventsSwum, totalDistanceCompleted);
 
   if (Object.keys(swimmerMapL4).length !== 0) {
     renderLevel4Times(swimmerMapL4, distances, recordedTypes, eventTimesTypeMap, category, age);
