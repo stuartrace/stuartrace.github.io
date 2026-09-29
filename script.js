@@ -396,7 +396,8 @@ export function loadData() {
 
   const qualifiedCount = Object.values(countyTimesAchieved).reduce((sum, distances) => sum + Object.keys(distances).length, 0);
   const l4EventsSwum = Object.values(swimmerMapL4).reduce((sum, types) => sum + Object.keys(types).length, 0);
-  showSwimmerDetailsInBoxes(age, name, swimmerNumber, qualifiedCount, numberOfEventsSwum + l4EventsSwum, totalDistanceCompleted);
+  const l4DistanceCompleted = Object.entries(swimmerMapL4).reduce((sum, [dist, types]) => sum + Object.keys(types).length * parseInt(dist.replace("m", "")), 0);
+  showSwimmerDetailsInBoxes(age, name, swimmerNumber, qualifiedCount, numberOfEventsSwum + l4EventsSwum, totalDistanceCompleted + l4DistanceCompleted);
 
   if (Object.keys(swimmerMapL4).length !== 0) {
     renderLevel4Times(swimmerMapL4, distances, recordedTypes, eventTimesTypeMap, category, age);
