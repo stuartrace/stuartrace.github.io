@@ -797,9 +797,9 @@ const urlSwimmerId = new URLSearchParams(window.location.search).get("swimmer");
 if (urlSwimmerId) {
   localStorage.setItem("child1-swimmer-number", urlSwimmerId);
 }
-loadData();
 window.saveTime = saveTime;
 window.deleteTime = deleteTime;
 window.saveData = saveData;
 window.lookupSwimmer = lookupSwimmer;
 window.changeSwimmer = changeSwimmer;
+loadData();
